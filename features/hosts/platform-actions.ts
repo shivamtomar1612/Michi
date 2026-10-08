@@ -162,8 +162,9 @@ export async function changeHostSlot(_state: HostActionState, form: FormData): P
 export async function submitHostCommunityFeedback(_state: HostActionState, form: FormData): Promise<HostActionState> {
   const { user } = await requireRole(["host"]);
   const parsed = hostCommunityFeedbackSchema.safeParse({
-    destinationId: read(form, "destinationId"), sentiment: read(form, "sentiment"),
-    pressureScore: read(form, "pressureScore"), comment: read(form, "comment"),
+    destinationId: read(form, "destinationId"), feedbackCategory: read(form, "feedbackCategory"),
+    sentiment: read(form, "sentiment"), pressureScore: read(form, "pressureScore"),
+    comment: read(form, "comment"), consent: read(form, "consent"),
   });
   if (!parsed.success) return { success: false, message: parsed.error.issues[0]?.message ?? "Review this feedback." };
   const supabase = await createClient();
@@ -174,10 +175,12 @@ export async function submitHostCommunityFeedback(_state: HostActionState, form:
   const { error } = await supabase.from("community_feedback").insert({
     destination_id: parsed.data.destinationId, host_id: user.id, author_id: user.id,
     sentiment: parsed.data.sentiment, pressure_score: pressure, comment: parsed.data.comment,
+    feedback_category: parsed.data.feedbackCategory, contributor_context: "host",
+    consent_to_aggregate: true, consent_given_at: new Date().toISOString(),
   });
   if (error) return { success: false, message: "Your host report could not be recorded." };
   revalidatePath("/host/community"); revalidatePath("/host/analytics");
-  return { success: true, message: "Host report recorded as community-provided context." };
+  return { success: true, message: "Report submitted for review as host-provided context. It will not appear in destination aggregates until approved." };
 }
 
 export async function updateHostSettings(_state: HostActionState, form: FormData): Promise<HostActionState> {

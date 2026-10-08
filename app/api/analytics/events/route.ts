@@ -19,10 +19,12 @@ export async function POST(request: NextRequest) {
   const parsed = destinationHealthEventSchema.safeParse(json);
   if (!parsed.success) return NextResponse.json({ error: "Invalid event payload." }, { status: 400 });
 
-  const { eventName, destinationId, sessionId, targetDestinationId, alternativeCount } = parsed.data;
+  const { eventName, destinationId, experienceId, sessionId, targetDestinationId, alternativeCount, recommendationCount, experienceCount } = parsed.data;
   const metadata = {
     ...(targetDestinationId ? { target_destination_id: targetDestinationId } : {}),
     ...(alternativeCount !== undefined ? { alternative_count: alternativeCount } : {}),
+    ...(recommendationCount !== undefined ? { recommendation_count: recommendationCount } : {}),
+    ...(experienceCount !== undefined ? { experience_count: experienceCount } : {}),
   };
 
   try {
@@ -32,7 +34,7 @@ export async function POST(request: NextRequest) {
       session_id: sessionId,
       event_name: eventName,
       destination_id: destinationId,
-      experience_id: null,
+      experience_id: experienceId ?? null,
       metadata,
     });
     if (error) return NextResponse.json({ error: "Event could not be recorded." }, { status: 503 });

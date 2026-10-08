@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ConfidenceBadge, SourceBadge, StaleWarning, VerificationBadge } from "@/components/cultural-knowledge-badges";
+import { trackAnalyticsEvent } from "@/lib/analytics/client";
 import type { CulturalConfidence } from "@/features/cultural-knowledge/types";
 import type { ConversationMessage } from "@/features/cultural-companion/schema";
 
@@ -59,6 +60,9 @@ export function CulturalCompanion({ destinationId, destinationName, experienceId
       const data = await response.json() as Result & { error?: string };
       if (!response.ok) throw new Error(data.error ?? copy.error);
       setResult(data);
+      if (destinationId && data.citations.length > 0) {
+        trackAnalyticsEvent({ eventName: "cultural_learning_interaction", destinationId, ...(experienceId ? { experienceId } : {}) });
+      }
       const assistantMessage: ConversationMessage = { role: "assistant", content: data.answer };
       setMessages((current) => [...current, assistantMessage].slice(-7));
     } catch {

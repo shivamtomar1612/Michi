@@ -14,6 +14,7 @@ import { getDestinationHealth } from "@/server/destination-health/service";
 import { getDestinationHealthForDestinations } from "@/server/destination-health/service";
 import { MapExplorer } from "@/components/map-explorer";
 import { buildCatalogueMapData } from "@/features/maps/catalogue";
+import { AnalyticsView } from "@/components/analytics-view";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -52,6 +53,7 @@ export default async function DestinationDetailPage({ params }: Props) {
       : null;
 
   return <>
+    <AnalyticsView eventName="destination_viewed" destinationId={destination.id} />
     <div className="container-editorial pt-6"><Link href="/destinations" className="inline-flex min-h-11 items-center gap-2 text-sm text-ink/70 hover:text-vermilion"><ArrowLeft className="size-4" aria-hidden="true" />All destinations</Link></div>
     <header className="container-editorial mt-3 border-y border-ink/15 bg-[#e9e5dc] px-6 py-12 sm:px-10 sm:py-16 lg:py-20">
       <div className="flex flex-wrap items-center gap-3"><DataStatusBadge status={destination.data_status} stale={stale} /><DataSourceBadge name={destination.source_name} sourceType={destination.source_type} stale={stale} /></div>

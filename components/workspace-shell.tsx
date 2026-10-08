@@ -22,14 +22,18 @@ const pagesFor = (role: string) => role.toLowerCase() === "host" ? [
   ...(role.toLowerCase() === "traveler" ? [
     { label: "Plan a journey", icon: Map, href: "/plan" },
     { label: "My bookings", icon: CalendarDays, href: "/bookings" },
+    { label: "Community feedback", icon: Users, href: "/community/feedback", absolute: true },
+  ] : []),
+  ...(role.toLowerCase() === "dmo" ? [
+    { label: "Community feedback", icon: Users, href: "/community/feedback", absolute: true },
   ] : []),
 ];
 
 function WorkspaceNav({ role, basePath, closeOnNavigate = false }: { role: string; basePath: string; closeOnNavigate?: boolean }) {
   const pathname = usePathname();
   return <nav aria-label={`${role} workspace navigation`} className="space-y-1">
-    {pagesFor(role).map(({ label, icon: Icon, href }) => {
-      const target = `${basePath}${href}`;
+    {pagesFor(role).map(({ label, icon: Icon, href, absolute }) => {
+      const target = absolute ? href : `${basePath}${href}`;
       const active = pathname === target;
       const link = <Link href={target} aria-current={active ? "page" : undefined} className={`flex min-h-11 items-center gap-3 px-3 text-sm ${active ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5 hover:text-ink"}`}><Icon className="size-4" aria-hidden="true" />{label}</Link>;
       return closeOnNavigate ? <DrawerClose key={label} asChild>{link}</DrawerClose> : <Fragment key={label}>{link}</Fragment>;

@@ -45,7 +45,9 @@ export const hostSettingsSchema = z.object({
 
 export const hostCommunityFeedbackSchema = z.object({
   destinationId: z.uuid(),
+  feedbackCategory: z.enum(["visitor_pressure", "cultural_respect", "operational_strain", "local_economic_benefit", "community_readiness", "environmental_concern"]),
   sentiment: z.enum(["positive", "neutral", "negative"]),
   pressureScore: z.union([z.literal(""), z.coerce.number().int().min(0).max(100)]),
-  comment: z.string().trim().min(8).max(1000),
+  comment: z.string().trim().max(1000),
+  consent: z.literal("on", { error: "Give permission for this report to be considered in anonymous aggregates." }),
 });

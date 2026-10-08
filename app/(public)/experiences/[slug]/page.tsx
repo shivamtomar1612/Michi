@@ -13,6 +13,7 @@ import { buildCatalogueMapData } from "@/features/maps/catalogue";
 import { getDestinationHealthForDestinations } from "@/server/destination-health/service";
 import { createClient } from "@/lib/supabase/server";
 import { MichiExperienceDetail } from "@/components/michi-experience-detail";
+import { AnalyticsView } from "@/components/analytics-view";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -37,7 +38,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
       const destinationsResult = await listDestinations();
       const destination = destinationsResult.ok ? destinationsResult.data.find((item) => item.id === michiResult.data?.destination_id) : undefined;
       const health = await getDestinationHealthForDestinations([michiResult.data.destination_id]);
-      return <MichiExperienceDetail experience={michiResult.data} destinationName={destination?.name ?? "Destination"} destinationSlug={destination?.slug ?? null} slots={slots ?? []} health={health[michiResult.data.destination_id] ?? null} />;
+      return <><AnalyticsView eventName="experience_viewed" destinationId={michiResult.data.destination_id} experienceId={michiResult.data.id} /><MichiExperienceDetail experience={michiResult.data} destinationName={destination?.name ?? "Destination"} destinationSlug={destination?.slug ?? null} slots={slots ?? []} health={health[michiResult.data.destination_id] ?? null} /></>;
     }
     if (!experienceResult.ok) return <div className="container-editorial py-12"><CatalogueUnavailable failure={experienceResult} returnHref="/experiences" /></div>;
     notFound();
@@ -58,6 +59,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
   const stale = isRecordStale(experience.next_verification_at);
 
   return <>
+    <AnalyticsView eventName="experience_viewed" destinationId={experience.destination_id} experienceId={experience.id} />
     <div className="container-editorial pt-6"><Link href="/experiences" className="inline-flex min-h-11 items-center gap-2 text-sm text-ink/70 hover:text-vermilion"><ArrowLeft className="size-4" aria-hidden="true" />All experiences</Link></div>
     <div className="container-editorial grid gap-8 py-4 pb-12 lg:grid-cols-[1.22fr_0.78fr] lg:gap-12 lg:pb-16">
       <div>

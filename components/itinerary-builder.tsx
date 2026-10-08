@@ -11,6 +11,7 @@ import type { RecommendationResult } from "@/features/recommendations/types";
 import type { ExternalDiscoveryMatch } from "@/features/recommendations/external";
 import { saveGeneratedItinerary, recordItineraryDecision } from "@/features/itineraries/actions";
 import { ProgressiveAuthDialog } from "@/components/progressive-auth-dialog";
+import { trackAnalyticsEvent } from "@/lib/analytics/client";
 
 const steps = ["Dates", "Starting place", "Interests", "Budget", "Travel style", "Access & food", "Crowds", "Review"] as const;
 const interestOptions = ["food", "craft", "history", "architecture", "nature", "tea", "traditional arts", "local lifestyle"];
@@ -167,6 +168,11 @@ export function ItineraryBuilder({ destinations, isAuthenticated, restoreGuest =
       const organizePayload = await organizeResponse.json() as BuilderResult & { error?: string };
       if (!organizeResponse.ok) throw new Error(organizePayload.error ?? "The itinerary could not be organized.");
       setResult(organizePayload);
+      const includedDestinations = [...new Set(organizePayload.candidates.map((candidate) => candidate.destinationId))];
+      for (const destinationId of includedDestinations) {
+        trackAnalyticsEvent({ eventName: "recommendation_generated", destinationId, recommendationCount: organizePayload.candidates.length });
+        trackAnalyticsEvent({ eventName: "itinerary_generated", destinationId, experienceCount: organizePayload.candidates.length });
+      }
       setSelection(Object.fromEntries(organizePayload.candidates.map((candidate) => [candidate.id, {
         selected: false, slotId: firstAvailableSlot(candidate), compare: false,
       }])));
@@ -189,6 +195,9 @@ export function ItineraryBuilder({ destinations, isAuthenticated, restoreGuest =
   }
 
   async function choose(candidate: Candidate, selected: boolean) {
+    if (candidate.origin === "michi_alternative") {
+      trackAnalyticsEvent({ eventName: "alternative_considered", destinationId: candidate.destinationId });
+    }
     const existing = selection[candidate.id] ?? { selected: false, slotId: firstAvailableSlot(candidate), compare: false };
     setBusy(true); setError(null);
     try {

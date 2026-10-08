@@ -152,32 +152,53 @@ export type Database = {
         Row: {
           author_id: string | null
           comment: string
+          consent_given_at: string | null
+          consent_to_aggregate: boolean
+          contributor_context: string
           created_at: string
           destination_id: string
+          feedback_category: string
           host_id: string | null
           id: string
+          moderation_status: string
           pressure_score: number | null
           sentiment: Database["public"]["Enums"]["feedback_sentiment"]
+          submitted_on: string
+          withdrawn_at: string | null
         }
         Insert: {
           author_id?: string | null
           comment?: string
+          consent_given_at?: string | null
+          consent_to_aggregate?: boolean
+          contributor_context?: string
           created_at?: string
           destination_id: string
+          feedback_category?: string
           host_id?: string | null
           id?: string
+          moderation_status?: string
           pressure_score?: number | null
           sentiment: Database["public"]["Enums"]["feedback_sentiment"]
+          submitted_on?: string
+          withdrawn_at?: string | null
         }
         Update: {
           author_id?: string | null
           comment?: string
+          consent_given_at?: string | null
+          consent_to_aggregate?: boolean
+          contributor_context?: string
           created_at?: string
           destination_id?: string
+          feedback_category?: string
           host_id?: string | null
           id?: string
+          moderation_status?: string
           pressure_score?: number | null
           sentiment?: Database["public"]["Enums"]["feedback_sentiment"]
+          submitted_on?: string
+          withdrawn_at?: string | null
         }
         Relationships: [
           {
@@ -644,6 +665,16 @@ export type Database = {
             referencedRelation: "destinations"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      destination_access_assignments: {
+        Row: { access_scope: string; destination_id: string; granted_at: string; granted_by: string; id: string; revoked_at: string | null; user_id: string }
+        Insert: { access_scope: string; destination_id: string; granted_at?: string; granted_by: string; id?: string; revoked_at?: string | null; user_id: string }
+        Update: { access_scope?: string; destination_id?: string; granted_at?: string; granted_by?: string; id?: string; revoked_at?: string | null; user_id?: string }
+        Relationships: [
+          { foreignKeyName: "destination_access_assignments_destination_id_fkey"; columns: ["destination_id"]; isOneToOne: false; referencedRelation: "destinations"; referencedColumns: ["id"] },
+          { foreignKeyName: "destination_access_assignments_granted_by_fkey"; columns: ["granted_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "destination_access_assignments_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ]
       }
       destinations: {
@@ -1961,6 +1992,26 @@ export type Database = {
           destination_name: string
           remaining_slot_capacity: number
         }[]
+      }
+      dmo_destination_month_metrics: {
+        Args: { p_destination_id: string; p_month: string }
+        Returns: Json
+      }
+      dmo_reflection_month_metric: {
+        Args: { p_destination_id: string; p_month: string }
+        Returns: Json
+      }
+      admin_grant_destination_access: {
+        Args: { p_access_scope: string; p_admin_id: string; p_destination_id: string; p_user_id: string }
+        Returns: string
+      }
+      admin_revoke_destination_access: {
+        Args: { p_admin_id: string; p_assignment_id: string }
+        Returns: boolean
+      }
+      withdraw_community_feedback: {
+        Args: { p_feedback_id: string }
+        Returns: boolean
       }
       get_shared_itinerary: {
         Args: { p_share_token: string }

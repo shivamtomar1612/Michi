@@ -1,14 +1,24 @@
-export type DestinationHealthEvent =
+export type AnalyticsEvent =
   | "destination_health_viewed"
   | "alternative_shown"
   | "alternative_selected"
-  | "popular_destination_retained";
+  | "popular_destination_retained"
+  | "destination_viewed"
+  | "experience_viewed"
+  | "recommendation_generated"
+  | "alternative_considered"
+  | "itinerary_generated"
+  | "cultural_learning_interaction"
+  | "reflection_submitted";
 
 type EventInput = {
-  eventName: DestinationHealthEvent;
+  eventName: AnalyticsEvent;
   destinationId: string;
+  experienceId?: string;
   targetDestinationId?: string;
   alternativeCount?: number;
+  recommendationCount?: number;
+  experienceCount?: number;
 };
 
 function getSessionId(): string | null {
@@ -24,7 +34,7 @@ function getSessionId(): string | null {
   }
 }
 
-export function trackDestinationHealthEvent(event: EventInput): void {
+export function trackAnalyticsEvent(event: EventInput): void {
   const sessionId = getSessionId();
   if (!sessionId) return;
 
@@ -35,3 +45,5 @@ export function trackDestinationHealthEvent(event: EventInput): void {
     keepalive: true,
   }).catch(() => undefined);
 }
+
+export const trackDestinationHealthEvent = trackAnalyticsEvent;
