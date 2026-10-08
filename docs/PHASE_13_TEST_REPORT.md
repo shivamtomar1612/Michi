@@ -27,6 +27,7 @@ There is no assigned DMO or community representative, so a real authorized DMO s
 ## Database and privacy checks
 
 - All Phase 13 migrations are recorded in the hosted migration history, including the follow-up assignment foreign-key indexes.
+- Local migration filename versions are aligned to the versions returned by the connected Supabase project, including the three earlier Phase 7 files whose prefixes had drifted. The Supabase plugin confirmed the remote history. The local Supabase CLI has no project ref linked, so `supabase migration list --linked` could not be used from this checkout; run `npx supabase link --project-ref sjfcwmaceduwdhpdccyh` before future CLI migration operations.
 - Row-level security remains enabled. Community reports are author-readable, submitted only by eligible verified hosts or assigned community representatives, consent-gated, moderated before aggregation, and withdrawable by the author.
 - DMO results are available only through destination-scoped aggregate RPCs. RPCs apply role and assignment checks, bounded non-overlapping calendar months, and minimum cohort suppression. Reflection output contains only a suppressed or threshold-qualified count; no reflection text or traveler identity is returned.
 - The retention schedule is active: daily at 03:27 UTC, deleting community feedback older than 25 months.
