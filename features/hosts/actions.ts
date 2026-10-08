@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/server/auth/guards";
 import { hostApplicationSchema, reviewApplicationSchema, inviteOperatorSchema } from "./schemas";
 import { createAdminClient } from "@/server/supabase/admin";
+import { recordAdminAudit } from "@/server/admin/audit";
 
 export type HostActionState = { message: string; success: boolean; data?: string };
 export const initialHostActionState: HostActionState = { message: "", success: false };
@@ -88,8 +89,15 @@ export async function inviteOperator(_state: HostActionState, form: FormData): P
   const { error: inviteError } = await admin.auth.admin.inviteUserByEmail(parsed.data.email, {
     redirectTo: `${origin}/auth/callback?next=/traveler/host-application`,
   });
-  if (inviteError) return { success: false, message: "Invitation prepared, but the email could not be sent. Review the invitation record before retrying." };
+  if (inviteError) {
+    await recordAdminAudit({ actorId: user.id, action: "host_invitation.delivery_failed", targetType: "host_invitation", targetId: String(invitation.id), outcome: "failed" });
+    return { success: false, message: "Invitation prepared, but the email could not be sent. Review the invitation record before retrying." };
+  }
   const { error: markError } = await admin.from("host_invitations").update({ status: "sent", sent_at: new Date().toISOString() }).eq("id", String(invitation.id));
-  if (markError) return { success: false, message: "Email sent, but the invitation status could not be updated. Check the record before retrying." };
+  if (markError) {
+    await recordAdminAudit({ actorId: user.id, action: "host_invitation.sent_status_unrecorded", targetType: "host_invitation", targetId: String(invitation.id), outcome: "failed" });
+    return { success: false, message: "Email sent, but the invitation status could not be updated. Check the record before retrying." };
+  }
+  await recordAdminAudit({ actorId: user.id, action: "host_invitation.sent", targetType: "host_invitation", targetId: String(invitation.id), metadata: { external_listing_associated: Boolean(parsed.data.externalExperienceId) } });
   return { success: true, message: "Invitation sent. The operator will still need to submit authorization evidence for review." };
 }

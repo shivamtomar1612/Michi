@@ -9,6 +9,7 @@ import type { Json, Database } from "@/types/database";
 import { canPublishCulturalVerification } from "@/features/cultural-knowledge/authorization";
 import { isCulturalRecordStale, detectCulturalConflicts } from "@/features/cultural-knowledge/model";
 import type { CulturalEvidenceRecord } from "@/features/cultural-knowledge/types";
+import { recordAdminAudit } from "@/server/admin/audit";
 
 const fail = (message: string, status = 400) => NextResponse.json({ error: message }, { status });
 
@@ -78,6 +79,7 @@ export async function POST(request: NextRequest) {
       default_verification_status: "unverified", is_active: false, allow_automatic_ingestion: false, notes: parsed.data.notes,
     }).select("id,name,base_url").single();
     if (error) return fail(error.code === "23505" ? "That base URL is already registered." : "Source could not be added.", 409);
+    if (data) await recordAdminAudit({ actorId: auth.user.id, action: "cultural_source.created", targetType: "cultural_source", targetId: data.id, metadata: { active: false, automatic_ingestion: false } });
     return NextResponse.json({ source: data }, { status: 201 });
   }
 
@@ -96,6 +98,7 @@ export async function POST(request: NextRequest) {
     const notes = reviewNotes ? [source.notes, "Access review: " + reviewNotes].filter(Boolean).join("\n") : source.notes;
     const { error } = await auth.supabase.from("cultural_sources").update({ approved_domains: domains, is_active: true, status: "verified", terms_reviewed_at: new Date().toISOString(), terms_reviewed_by: auth.user.id, notes }).eq("id", sourceId);
     if (error) return fail("Domain approval could not be saved.", 503);
+    await recordAdminAudit({ actorId: auth.user.id, action: "cultural_source.domain_approved", targetType: "cultural_source", targetId: sourceId, metadata: { terms_reviewed: true, domain_added: true } });
     return NextResponse.json({ approved: true, domain: host });
   }
 
@@ -112,6 +115,7 @@ export async function POST(request: NextRequest) {
     const urls = [...new Set([...(source.approved_urls ?? []), approvedUrl.href])];
     const updated = await auth.supabase.from("cultural_sources").update({ approved_urls: urls }).eq("id", sourceId);
     if (updated.error) return fail("URL approval could not be saved.", 503);
+    await recordAdminAudit({ actorId: auth.user.id, action: "cultural_source.url_approved", targetType: "cultural_source", targetId: sourceId, metadata: { exact_url_approved: true } });
     return NextResponse.json({ approved: true, url: approvedUrl.href });
   }
 
@@ -121,6 +125,7 @@ export async function POST(request: NextRequest) {
     const sourceId = parsedSourceId.data;
     const { error } = await auth.supabase.from("cultural_sources").update({ is_active: false, status: "stale", allow_automatic_ingestion: false }).eq("id", sourceId);
     if (error) return fail("Source could not be disabled.", 503);
+    await recordAdminAudit({ actorId: auth.user.id, action: "cultural_source.disabled", targetType: "cultural_source", targetId: sourceId, metadata: { automatic_ingestion: false } });
     return NextResponse.json({ disabled: true });
   }
 
@@ -139,8 +144,10 @@ export async function POST(request: NextRequest) {
       const fetched = await fetchApprovedSource(rawUrl, source.approved_domains ?? []);
       const blocks = extractSemanticBlocks(fetched.body);
       const chunks = await chunkSemanticBlocks(blocks);
+      await recordAdminAudit({ actorId: auth.user.id, action: "cultural_ingestion.preview", targetType: "cultural_source", targetId: sourceId, metadata: { outcome: "success", chunks: chunks.length } });
       return NextResponse.json({ source: { id: source.id, name: source.name, sourceType: source.source_type, authorityLevel: source.authority_level }, selectedUrl: rawUrl, fetched: { url: fetched.url, contentType: fetched.contentType, retrievedAt: fetched.retrievedAt }, chunks });
     } catch (error) {
+      await recordAdminAudit({ actorId: auth.user.id, action: "cultural_ingestion.preview", targetType: "cultural_source", targetId: sourceId, outcome: "failed", metadata: { error_code: error instanceof SourceFetchError ? String(error.status) : "502" } });
       return fail(error instanceof SourceFetchError ? error.message : "Source preview failed safely.", error instanceof SourceFetchError ? error.status : 502);
     }
   }
@@ -163,6 +170,7 @@ export async function POST(request: NextRequest) {
       retrieved_at: parsed.data.retrievedAt ?? (parsed.data.metadata.manualEntry === true ? null : new Date().toISOString()),
     }, { onConflict: "source_id,content_hash", ignoreDuplicates: true }).select("id").maybeSingle();
     if (error) return fail("Content could not be staged for review.", 503);
+    await recordAdminAudit({ actorId: auth.user.id, action: "cultural_content.staged", targetType: "cultural_content", targetId: data?.id ?? null, metadata: { duplicate: !data, category: normalized.category } });
     return NextResponse.json({ staged: Boolean(data), duplicate: !data, id: data?.id ?? null }, { status: 201 });
   }
 
@@ -201,6 +209,7 @@ export async function POST(request: NextRequest) {
     }
     const { error } = await auth.supabase.from("cultural_content").update(update).eq("id", parsed.data.id);
     if (error) return fail("Review decision could not be saved.", 503);
+    // A database trigger records the verification change in the same transaction.
     return NextResponse.json({ saved: true });
   }
   return fail("Unknown knowledge action.");

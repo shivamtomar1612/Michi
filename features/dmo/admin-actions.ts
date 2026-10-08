@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createAdminClient } from "@/server/supabase/admin";
 import { requireRole } from "@/server/auth/guards";
+import { recordAdminAudit } from "@/server/admin/audit";
 
 export type DmoAdminActionState = { success: boolean; message: string };
 const read = (form: FormData, key: string) => String(form.get(key) ?? "");
@@ -20,11 +21,12 @@ export async function grantDestinationAccess(_state: DmoAdminActionState, form: 
   if (!parsed.success) return { success: false, message: "Choose an existing account, destination and access scope." };
   try {
     const admin = await createAdminClient();
-    const { error } = await admin.rpc("admin_grant_destination_access", {
+    const { data: assignmentId, error } = await admin.rpc("admin_grant_destination_access", {
       p_admin_id: user.id, p_user_id: parsed.data.userId,
       p_destination_id: parsed.data.destinationId, p_access_scope: parsed.data.scope,
     });
     if (error) return { success: false, message: "Access could not be granted. Check the target account role and published destination." };
+    await recordAdminAudit({ actorId: user.id, action: "destination_access.granted", targetType: "destination_access_assignment", targetId: assignmentId, metadata: { destination_id: parsed.data.destinationId, access_scope: parsed.data.scope } });
     revalidatePath("/admin/dmo-access");
     revalidatePath("/dmo");
     return { success: true, message: parsed.data.scope === "dmo_analytics"
@@ -45,6 +47,7 @@ export async function revokeDestinationAccess(_state: DmoAdminActionState, form:
       p_admin_id: user.id, p_assignment_id: assignmentId.data,
     });
     if (error || !data) return { success: false, message: "The active assignment could not be revoked." };
+    await recordAdminAudit({ actorId: user.id, action: "destination_access.revoked", targetType: "destination_access_assignment", targetId: assignmentId.data });
     revalidatePath("/admin/dmo-access");
     revalidatePath("/dmo");
     revalidatePath("/community/feedback");
@@ -55,7 +58,7 @@ export async function revokeDestinationAccess(_state: DmoAdminActionState, form:
 }
 
 export async function reviewCommunityFeedback(_state: DmoAdminActionState, form: FormData): Promise<DmoAdminActionState> {
-  await requireRole(["admin"]);
+  const { user } = await requireRole(["admin"]);
   const parsed = z.object({ id: uuid, decision: z.enum(["approved", "rejected"]) }).safeParse({
     id: read(form, "feedbackId"), decision: read(form, "decision"),
   });
@@ -74,6 +77,7 @@ export async function reviewCommunityFeedback(_state: DmoAdminActionState, form:
       .eq("id", parsed.data.id).eq("moderation_status", "pending").is("withdrawn_at", null)
       .select("id").maybeSingle();
     if (error || !updated) return { success: false, message: "This report changed before moderation could be saved. Refresh the queue." };
+    await recordAdminAudit({ actorId: user.id, action: "community_feedback.reviewed", targetType: "community_feedback", targetId: updated.id, metadata: { decision: parsed.data.decision } });
     revalidatePath("/admin/community-feedback");
     revalidatePath("/dmo");
     return { success: true, message: parsed.data.decision === "approved" ? "Report approved for anonymous aggregates." : "Report rejected." };

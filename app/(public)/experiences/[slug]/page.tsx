@@ -14,6 +14,7 @@ import { getDestinationHealthForDestinations } from "@/server/destination-health
 import { createClient } from "@/lib/supabase/server";
 import { MichiExperienceDetail } from "@/components/michi-experience-detail";
 import { AnalyticsView } from "@/components/analytics-view";
+import { ContentReportLink } from "@/components/admin/content-report-link";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -38,7 +39,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
       const destinationsResult = await listDestinations();
       const destination = destinationsResult.ok ? destinationsResult.data.find((item) => item.id === michiResult.data?.destination_id) : undefined;
       const health = await getDestinationHealthForDestinations([michiResult.data.destination_id]);
-      return <><AnalyticsView eventName="experience_viewed" destinationId={michiResult.data.destination_id} experienceId={michiResult.data.id} /><MichiExperienceDetail experience={michiResult.data} destinationName={destination?.name ?? "Destination"} destinationSlug={destination?.slug ?? null} slots={slots ?? []} health={health[michiResult.data.destination_id] ?? null} /></>;
+      return <><AnalyticsView eventName="experience_viewed" destinationId={michiResult.data.destination_id} experienceId={michiResult.data.id} /><MichiExperienceDetail experience={michiResult.data} destinationName={destination?.name ?? "Destination"} destinationSlug={destination?.slug ?? null} slots={slots ?? []} health={health[michiResult.data.destination_id] ?? null} /><div className="container-editorial pb-8"><ContentReportLink subjectType="experience" subjectId={michiResult.data.id} /></div></>;
     }
     if (!experienceResult.ok) return <div className="container-editorial py-12"><CatalogueUnavailable failure={experienceResult} returnHref="/experiences" /></div>;
     notFound();
@@ -68,6 +69,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
         <section className="mt-10 border-t border-ink/15 pt-7"><p className="eyebrow">Official information</p><h2 className="mt-2 font-serif text-2xl">Review details with the operator.</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-ink/70">The operator controls terms, availability, current pricing, and participation details. MICHI has not onboarded this listing and cannot confirm its current availability.</p><div className="mt-4"><OfficialSourceLink href={experience.official_url} label="View official experience information" /></div></section>
         <CulturalCompanion destinationId={experience.destination_id} destinationName={destination?.name} experienceId={experience.id} experienceName={experience.title} />
         <CulturalEvidencePanel destinationId={experience.destination_id} placeName={experience.title + (destination ? ", " + destination.name : "")} />
+        <div className="mt-6"><ContentReportLink subjectType="external_experience" subjectId={experience.id} /></div>
       </div>
       <aside className="lg:sticky lg:top-24 lg:self-start">
         <div className="border border-ink/15 bg-white p-5 sm:p-7"><p className="eyebrow">External operator</p><h2 className="mt-2 font-serif text-xl">{experience.operator_name}</h2><dl className="mt-6 divide-y divide-ink/10 border-y border-ink/10">{[{ label: "Duration", value: experience.duration_minutes ? `${experience.duration_minutes} minutes` : "Not yet verified" }, { label: "Price", value: experience.price_text ?? "Not yet verified" }, { label: "Accessibility", value: experience.accessibility_status === "verified" ? "Verified details available" : "Not yet verified" }].map(({ label, value }) => <div key={label} className="flex justify-between gap-4 py-3 text-sm"><dt className="text-ink/60">{label}</dt><dd className="text-right font-medium">{value}</dd></div>)}</dl>

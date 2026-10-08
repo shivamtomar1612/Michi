@@ -6,6 +6,7 @@ import { ExperienceApprovalForm } from "@/components/host-inventory";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/server/supabase/admin";
 import { requireRole } from "@/server/auth/guards";
+import { AdminNav } from "@/app/admin/_components/admin-nav";
 
 export const metadata: Metadata = { title: "Data health and host review" };
 
@@ -48,6 +49,41 @@ async function loadMetrics() {
   ] as const;
 }
 
+async function loadOperationalMetrics() {
+  const admin = await createAdminClient();
+  const now = new Date().toISOString();
+  const results = await Promise.all([
+    admin.from("profiles").select("id", { count: "exact", head: true }),
+    admin.from("bookings").select("id", { count: "exact", head: true }).eq("status", "confirmed"),
+    admin.from("analytics_events").select("id", { count: "exact", head: true }).eq("event_name", "recommendation_generated"),
+    admin.from("analytics_events").select("id", { count: "exact", head: true }).eq("event_name", "itinerary_generated"),
+    admin.from("analytics_events").select("id", { count: "exact", head: true }).eq("event_name", "cultural_companion_question"),
+    admin.from("traveler_reflections").select("booking_id", { count: "exact", head: true }),
+    admin.from("destination_access_assignments").select("id", { count: "exact", head: true }).eq("access_scope", "dmo_analytics").is("revoked_at", null),
+    admin.from("content_reports").select("id", { count: "exact", head: true }).in("status", ["pending", "under_review"]),
+    admin.from("cultural_content").select("id", { count: "exact", head: true }).eq("is_active", true).lt("next_verification_at", now),
+    admin.from("cultural_sources").select("id", { count: "exact", head: true }).eq("is_active", true).lt("stale_after", now),
+    admin.from("admin_audit_log").select("id", { count: "exact", head: true }).eq("action", "cultural_ingestion.preview").eq("outcome", "failed").gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()),
+    admin.from("admin_audit_log").select("id", { count: "exact", head: true }).eq("outcome", "failed").gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()),
+    admin.from("admin_audit_log").select("id", { count: "exact", head: true }).in("action", ["host_application.reviewed", "experience.governance_state_changed", "community_feedback.reviewed", "content_report.reviewed", "cultural_content.reviewed"]).gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()),
+  ]);
+  return [
+    ["Registered profiles", results[0].error ? null : results[0].count],
+    ["Confirmed MICHI bookings", results[1].error ? null : results[1].count],
+    ["Recommendation requests", results[2].error ? null : results[2].count],
+    ["Itinerary generations", results[3].error ? null : results[3].count],
+    ["Cultural Companion questions", results[4].error ? null : results[4].count],
+    ["Saved reflections", results[5].error ? null : results[5].count],
+    ["Active DMO assignments", results[6].error ? null : results[6].count],
+    ["Open content reports", results[7].error ? null : results[7].count],
+    ["Content due for verification", results[8].error ? null : results[8].count],
+    ["Sources past freshness date", results[9].error ? null : results[9].count],
+    ["Failed ingestion previews · 30 days", results[10].error ? null : results[10].count],
+    ["Failed admin operations · 30 days", results[11].error ? null : results[11].count],
+    ["Recent verification/moderation decisions · 30 days", results[12].error ? null : results[12].count],
+  ] as const;
+}
+
 export default async function AdminPage() {
   await requireRole(["admin"]);
   const supabase = await createClient();
@@ -55,8 +91,10 @@ export default async function AdminPage() {
     .select("id,organization_name,legal_name,official_website,external_experience_id,contact_email,ownership_evidence,experience_description,cultural_rules,accessibility_details,availability_plan,capacity_plan,cancellation_rules,status,submitted_at")
     .in("status", ["submitted", "under_review", "verified"]).order("submitted_at", { ascending: false }).limit(100);
   let metrics: Awaited<ReturnType<typeof loadMetrics>> | null = null;
+  let operations: Awaited<ReturnType<typeof loadOperationalMetrics>> | null = null;
   let pendingExperiences: Array<{ id: string; title: string; host_id: string }> | null = null;
   try { metrics = await loadMetrics(); } catch { /* Report unavailable, never estimate counts. */ }
+  try { operations = await loadOperationalMetrics(); } catch { /* Keep unavailable metrics explicit. */ }
   try {
     const admin = await createAdminClient();
     const { data, error } = await admin.from("experiences").select("id,title,host_id")
@@ -66,11 +104,17 @@ export default async function AdminPage() {
   return <WorkspaceShell role="Admin" basePath="/admin"><div className="mx-auto max-w-5xl">
     <p className="eyebrow">Operations</p><h1 className="mt-3 font-serif text-4xl">Data health and host review</h1>
     <p className="mt-4 text-sm leading-6 text-ink/65">Counts come from the connected database. Unavailable metrics are shown as unavailable.</p>
-    <nav className="mt-4 flex flex-wrap gap-3" aria-label="Admin tools"><a href="/admin/knowledge" className="inline-flex min-h-11 items-center border border-ink/25 px-4 text-sm font-semibold underline underline-offset-4">Open cultural knowledge</a><a href="/admin/dmo-access" className="inline-flex min-h-11 items-center border border-ink/25 px-4 text-sm font-semibold underline underline-offset-4">Manage destination access</a><a href="/admin/community-feedback" className="inline-flex min-h-11 items-center border border-ink/25 px-4 text-sm font-semibold underline underline-offset-4">Review community feedback</a></nav>
+    <AdminNav />
     <section className="mt-9" aria-labelledby="data-health-title"><h2 id="data-health-title" className="font-serif text-2xl">Data health</h2>
       {metrics ? <dl className="mt-4 grid gap-px border border-ink/15 bg-ink/15 sm:grid-cols-2 lg:grid-cols-3">{metrics.map(([label, value]) => <div key={label} className="bg-paper p-4"><dt className="text-xs text-ink/60">{label}</dt><dd className="mt-2 font-serif text-3xl tabular-nums">{value ?? "Unavailable"}</dd></div>)}</dl>
         : <p role="status" className="mt-4 border-l-2 border-vermilion p-4 text-sm">Privileged data metrics are unavailable. The server key or onboarding migration may be missing.</p>}
       <p className="mt-3 text-xs text-ink/55">Source ingestion failures are not yet recorded as database events.</p>
+    </section>
+    <section className="mt-12" aria-labelledby="operations-title"><h2 id="operations-title" className="font-serif text-2xl">Platform activity</h2>
+      <p className="mt-2 text-xs text-ink/55">These are MICHI database and event counts, not total destination visitor volume or verified local economic impact.</p>
+      {operations ? <dl className="mt-4 grid gap-px border border-ink/15 bg-ink/15 sm:grid-cols-2 lg:grid-cols-3">{operations.map(([label, value]) => <div key={label} className="bg-paper p-4"><dt className="text-xs text-ink/60">{label}</dt><dd className="mt-2 font-serif text-3xl tabular-nums">{value ?? "Unavailable"}</dd></div>)}</dl>
+        : <p role="status" className="mt-4 border-l-2 border-vermilion p-4 text-sm">Operational metrics are unavailable.</p>}
+      <p className="mt-3 text-xs text-ink/55">Ingestion failures and application errors are not currently persisted as operational events. They are not represented as zero here.</p>
     </section>
     <section className="mt-12" aria-labelledby="invite-title"><h2 id="invite-title" className="font-serif text-2xl">Invite a genuine operator</h2><OperatorInviteForm /></section>
     <section className="mt-12" aria-labelledby="host-review-title"><h2 id="host-review-title" className="font-serif text-2xl">Operator applications</h2>

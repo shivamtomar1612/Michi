@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: { action: string; actor_id: string | null; created_at: string; id: string; metadata: Json; outcome: string; target_id: string | null; target_type: string }
+        Insert: { action: string; actor_id?: string | null; created_at?: string; id?: string; metadata?: Json; outcome: string; target_id?: string | null; target_type: string }
+        Update: { action?: string; actor_id?: string | null; created_at?: string; id?: string; metadata?: Json; outcome?: string; target_id?: string | null; target_type?: string }
+        Relationships: [{ foreignKeyName: "admin_audit_log_actor_id_fkey"; columns: ["actor_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] }]
+      }
+      content_reports: {
+        Row: { appeal_message: string | null; appeal_requested_at: string | null; created_at: string; details: string; id: string; reason_code: string; reporter_id: string; reviewed_at: string | null; reviewer_id: string | null; reviewer_note: string | null; reviewer_reason: string | null; status: string; subject_id: string; subject_type: string; updated_at: string }
+        Insert: { appeal_message?: string | null; appeal_requested_at?: string | null; created_at?: string; details: string; id?: string; reason_code: string; reporter_id: string; reviewed_at?: string | null; reviewer_id?: string | null; reviewer_note?: string | null; reviewer_reason?: string | null; status?: string; subject_id: string; subject_type: string; updated_at?: string }
+        Update: { appeal_message?: string | null; appeal_requested_at?: string | null; created_at?: string; details?: string; id?: string; reason_code?: string; reporter_id?: string; reviewed_at?: string | null; reviewer_id?: string | null; reviewer_note?: string | null; reviewer_reason?: string | null; status?: string; subject_id?: string; subject_type?: string; updated_at?: string }
+        Relationships: [
+          { foreignKeyName: "content_reports_reporter_id_fkey"; columns: ["reporter_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "content_reports_reviewer_id_fkey"; columns: ["reviewer_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ]
+      }
       analytics_events: {
         Row: {
           created_at: string

@@ -15,6 +15,7 @@ import { getDestinationHealthForDestinations } from "@/server/destination-health
 import { MapExplorer } from "@/components/map-explorer";
 import { buildCatalogueMapData } from "@/features/maps/catalogue";
 import { AnalyticsView } from "@/components/analytics-view";
+import { ContentReportLink } from "@/components/admin/content-report-link";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -61,7 +62,7 @@ export default async function DestinationDetailPage({ params }: Props) {
       <h1 className="mt-2 font-serif text-5xl tracking-[-0.04em] sm:text-7xl">{destination.name}</h1>
       {destination.name_ja ? <p lang="ja" className="mt-2 text-lg text-ink/65">{destination.name_ja}</p> : null}
       <p className="mt-6 max-w-3xl text-base leading-7 text-ink/75">{destination.description ?? "A source-backed destination description is not yet available."}</p>
-      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2"><OfficialSourceLink href={destination.source_url} /><LastVerified date={destination.last_verified_at} stale={stale} /></div>
+      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2"><OfficialSourceLink href={destination.source_url} /><LastVerified date={destination.last_verified_at} stale={stale} /><ContentReportLink subjectType="destination" subjectId={destination.id} /></div>
     </header>
     <nav aria-label="On this page" className="sticky top-[4.5rem] z-20 border-y border-ink/10 bg-paper/95 backdrop-blur-sm"><div className="container-editorial flex gap-6 overflow-x-auto">{[{ href: "#overview", label: "Overview" }, { href: "#places", label: "Places" }, { href: "#experiences", label: "External experiences" }, { href: "#health", label: "Visitor signals" }].map((item) => <a key={item.href} href={item.href} className="min-h-12 shrink-0 content-center text-xs font-medium text-ink/70 hover:text-vermilion">{item.label}</a>)}</div></nav>
     <div className="container-editorial grid gap-12 py-12 lg:grid-cols-[1fr_0.72fr] lg:gap-20 lg:py-16">

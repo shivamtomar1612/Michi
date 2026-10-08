@@ -3,6 +3,7 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import { DestinationAccessGrantForm, RevokeDestinationAccessForm } from "@/components/dmo-access-admin";
 import { createAdminClient } from "@/server/supabase/admin";
 import { requireRole } from "@/server/auth/guards";
+import { AdminNav } from "@/app/admin/_components/admin-nav";
 
 export const metadata: Metadata = { title: "Destination access · MICHI admin" };
 
@@ -20,6 +21,7 @@ export default async function DmoAccessAdminPage() {
   return <WorkspaceShell role="Admin" basePath="/admin"><div className="mx-auto max-w-5xl">
     <p className="eyebrow">Access governance</p><h1 className="mt-3 font-serif text-4xl">Destination access</h1>
     <p className="mt-4 max-w-3xl text-sm leading-6 text-ink/65">Grant destination-specific DMO analytics or community-representative feedback access to an existing profile. Assignment and role authorization are checked server-side; signup metadata cannot grant these privileges.</p>
+    <AdminNav />
     {loadError ? <p role="alert" className="mt-8 border-l-2 border-vermilion p-4 text-sm">Access records could not be loaded.</p> : <>
       <section className="mt-8"><h2 className="mb-4 font-serif text-2xl">Grant access</h2><DestinationAccessGrantForm
         users={(profiles ?? []).map((profile) => ({ id: profile.id, label: `${profile.full_name || "Unnamed account"} · ${profile.role} · ${profile.id.slice(0, 8)}` }))}
