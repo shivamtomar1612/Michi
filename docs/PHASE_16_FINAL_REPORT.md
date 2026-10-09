@@ -2,7 +2,7 @@
 
 ## Scope
 
-Security hardening, test and data-access audit for the Phase 15 baseline. Work is isolated on `test/phase-16-security`; no merge or deployment was performed.
+Security hardening and test/data-access audit for the Phase 15 baseline. The work was developed on `test/phase-16-security` and fast-forwarded to `main` after local checks and branch CI passed. No deployment was performed.
 
 ## Findings and changes
 
@@ -10,7 +10,7 @@ Security hardening, test and data-access audit for the Phase 15 baseline. Work i
 - Made cultural evidence requests fail closed in production when the shared Supabase rate-limit backend is not configured.
 - Added baseline browser security headers for MIME sniffing, framing, referrer leakage, and device capabilities.
 - Added regression tests for byte-limit handling and production rate-limit configuration.
-- Updated CI to run on the Phase 16 branch and audit production dependencies.
+- Updated CI to run on the Phase 16 branch, audit production dependencies, use maintained Node 24 action runtimes, and pin Ubuntu 24.04.
 - Read-only audit of hosted Supabase and security advisor performed; no hosted migrations or data writes.
 
 ## Validation
@@ -24,6 +24,7 @@ Security hardening, test and data-access audit for the Phase 15 baseline. Work i
 - `git diff --check`: PASS.
 - Secret-pattern review: zero matches in tracked source and commit diff history; `.env.local` is ignored and untracked.
 - Anonymous hosted RLS probes: PASS for sensitive table denials and published destination read as detailed in `RLS_TEST_REPORT.md`.
+- GitHub Actions CI: PASS for Phase 16 branch commit `58ffbfb` and the same commit on `main`.
 - Authenticated role isolation, real booking concurrency, Playwright journeys, visual keyboard/mobile checks, and live adversarial Gemini calls: BLOCKED/not run because isolated test identities/environment and browser runner were unavailable. No live write or paid external test calls were made.
 
 ## Residual risks and manual actions
@@ -37,4 +38,4 @@ Security hardening, test and data-access audit for the Phase 15 baseline. Work i
 
 ## Git status
 
-This report is included on `test/phase-16-security`. The branch is not merged or deployed automatically; the final commit and remote verification are reported with the handoff.
+Phase 16 is present on `main` at implementation commit `58ffbfbef898c8f5810852ca14504a9f9d696430`; the remote `main` matched after push and its CI run passed. The test branch remains available. No deployment was performed.
