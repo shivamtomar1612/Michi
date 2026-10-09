@@ -4,7 +4,7 @@
 
 Audited on 2026-10-09 against the current `feature/michi-premium-redesign` checkout. The local Next.js 16.4 development server started and returned HTTP 200 for the homepage. Browser inspection covered the homepage, Discover, and Kanazawa detail. The browser viewport available during this audit was 905px wide; it exposed the tablet-to-mobile navigation treatment. Dynamic authenticated dashboards were inventoried from their actual route files and layouts, but no role-specific account was used to enter them. This is a frontend audit, not a full business-logic or accessibility certification.
 
-The user confirmed that Traveler Discovery → Responsible Recommendations → Cultural Experience should lead the visual hierarchy. Cultural discovery is the emotional entry; responsible recommendations are the signature product interaction. Itinerary/Cultural Companion, local experiences/booking, and Cultural Passport follow that journey. Host, DMO, and Admin workspaces remain professional and role-specific, but secondary in the public brand hierarchy.
+The user confirmed that Traveler Discovery → Responsible Recommendations → Cultural Experience should lead the visual hierarchy. Cultural discovery is the emotional entry; responsible recommendations are the signature product interaction. Itinerary/Cultural Companion, local experiences/booking, and Cultural Passport follow that journey. Host, DMO, and Admin workspaces remain professional and role-specific, but secondary in the public brand hierarchy. The selected homepage composition is an image-led spread with an immersive landscape followed by destination regions.
 
 ## Actual route inventory
 
@@ -88,12 +88,12 @@ API route files exist for admin knowledge, AI cultural assistant, analytics, boo
 
 ## Confirmed design priority
 
-The user chose a concept-image-first workflow and confirmed the visual direction: premium Japanese cultural travel storytelling, warm ivory/deep ink/restrained vermilion, elegant typography, cinematic photography, and subtle motion. The final concept approval remains a separate checkpoint before implementation. No real destination photo is currently cleared for use in the repository.
+The user chose a concept-image-first workflow, then selected an image-led spread with regions below the immersive image. The live implementation uses genuine, attributed photos for Kanazawa, Kyoto, and Takayama; generated concept images remain in `.impeccable/mocks/decision/` as design-only references and are not imported into the product.
 
 ## Scope limits
 
 - No active host inventory or date-specific slots were observed in the live project audit; the design must not imply MICHI booking availability.
 - No current destination health signal set was available; no verified score may be rendered.
 - No host/DMO/admin credentials were used in this audit, so protected routes were inventoried but not visually verified.
-- Screenshot observations are from the current in-app browser capture; an automated screenshot archive and all responsive widths are still outstanding.
+- The implementation is in progress on the selected composition. Browser screenshots and responsive checks are recorded in `docs/VISUAL_QA_REPORT.md`.
 - Screenshot review cannot establish full WCAG conformance; keyboard, contrast, screen-reader, and control-state checks remain required.

@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-09T04:34:26Z",
+  "title": "Design System: MICHI",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Restrained Vermilion", "canonical": "#963b2b", "tonalRamp": ["oklch(18% 0.07 30)", "oklch(28% 0.10 30)", "oklch(38% 0.13 30)", "oklch(48% 0.16 30)", "oklch(58% 0.19 30)", "oklch(68% 0.15 30)", "oklch(80% 0.09 30)", "oklch(94% 0.03 30)"] },
+      "primary-deep": { "role": "primary", "displayName": "Deep Vermilion", "canonical": "#793020", "tonalRamp": ["oklch(16% 0.06 32)", "oklch(26% 0.09 32)", "oklch(36% 0.12 32)", "oklch(46% 0.15 32)", "oklch(56% 0.16 32)", "oklch(68% 0.12 32)", "oklch(80% 0.07 32)", "oklch(94% 0.02 32)"] },
+      "paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#f7f5ef", "tonalRamp": ["oklch(15% 0.01 90)", "oklch(25% 0.012 90)", "oklch(35% 0.014 90)", "oklch(45% 0.016 90)", "oklch(58% 0.016 90)", "oklch(72% 0.014 90)", "oklch(85% 0.012 90)", "oklch(96% 0.012 90)"] },
+      "surface": { "role": "neutral", "displayName": "Soft Porcelain", "canonical": "#fffefa", "tonalRamp": ["oklch(15% 0.005 90)", "oklch(25% 0.006 90)", "oklch(35% 0.007 90)", "oklch(45% 0.008 90)", "oklch(58% 0.008 90)", "oklch(72% 0.007 90)", "oklch(86% 0.006 90)", "oklch(98% 0.006 90)"] },
+      "surface-muted": { "role": "neutral", "displayName": "Quiet Paper", "canonical": "#efede5", "tonalRamp": ["oklch(15% 0.01 95)", "oklch(25% 0.012 95)", "oklch(35% 0.014 95)", "oklch(45% 0.016 95)", "oklch(58% 0.018 95)", "oklch(70% 0.017 95)", "oklch(82% 0.015 95)", "oklch(94% 0.015 95)"] },
+      "ink": { "role": "neutral", "displayName": "Deep Blue-Gray Ink", "canonical": "#202b30", "tonalRamp": ["oklch(16% 0.025 225)", "oklch(25% 0.03 225)", "oklch(34% 0.035 225)", "oklch(44% 0.04 225)", "oklch(55% 0.04 225)", "oklch(68% 0.035 225)", "oklch(82% 0.025 225)", "oklch(95% 0.015 225)"] },
+      "ink-muted": { "role": "neutral", "displayName": "Muted Ink", "canonical": "#59636a", "tonalRamp": ["oklch(18% 0.02 230)", "oklch(28% 0.025 230)", "oklch(38% 0.03 230)", "oklch(48% 0.035 230)", "oklch(58% 0.035 230)", "oklch(70% 0.03 230)", "oklch(83% 0.02 230)", "oklch(95% 0.012 230)"] },
+      "border": { "role": "neutral", "displayName": "Soft Divider", "canonical": "#d9d6cd", "tonalRamp": ["oklch(15% 0.008 90)", "oklch(25% 0.01 90)", "oklch(35% 0.012 90)", "oklch(45% 0.014 90)", "oklch(58% 0.015 90)", "oklch(70% 0.014 90)", "oklch(82% 0.012 90)", "oklch(92% 0.01 90)"] },
+      "border-strong": { "role": "neutral", "displayName": "Firm Divider", "canonical": "#aaa69b", "tonalRamp": ["oklch(15% 0.01 90)", "oklch(25% 0.012 90)", "oklch(35% 0.014 90)", "oklch(45% 0.016 90)", "oklch(56% 0.018 90)", "oklch(68% 0.018 90)", "oklch(80% 0.016 90)", "oklch(91% 0.013 90)"] },
+      "success": { "role": "tertiary", "displayName": "Moss", "canonical": "#536b5c", "tonalRamp": ["oklch(15% 0.04 155)", "oklch(25% 0.055 155)", "oklch(35% 0.07 155)", "oklch(45% 0.085 155)", "oklch(56% 0.09 155)", "oklch(68% 0.075 155)", "oklch(81% 0.05 155)", "oklch(94% 0.025 155)"] },
+      "moss-muted": { "role": "tertiary", "displayName": "Muted Moss", "canonical": "#778b76", "tonalRamp": ["oklch(17% 0.035 145)", "oklch(27% 0.045 145)", "oklch(37% 0.055 145)", "oklch(47% 0.065 145)", "oklch(58% 0.07 145)", "oklch(70% 0.06 145)", "oklch(83% 0.045 145)", "oklch(95% 0.025 145)"] },
+      "indigo-muted": { "role": "tertiary", "displayName": "Muted Indigo", "canonical": "#536177", "tonalRamp": ["oklch(15% 0.04 260)", "oklch(25% 0.05 260)", "oklch(35% 0.06 260)", "oklch(45% 0.07 260)", "oklch(56% 0.075 260)", "oklch(68% 0.065 260)", "oklch(81% 0.045 260)", "oklch(94% 0.025 260)"] },
+      "warning": { "role": "secondary", "displayName": "Caution Ochre", "canonical": "#786033", "tonalRamp": ["oklch(15% 0.05 80)", "oklch(25% 0.065 80)", "oklch(35% 0.08 80)", "oklch(45% 0.095 80)", "oklch(56% 0.10 80)", "oklch(68% 0.085 80)", "oklch(81% 0.06 80)", "oklch(94% 0.03 80)"] },
+      "danger": { "role": "secondary", "displayName": "Brick Error", "canonical": "#8a3826", "tonalRamp": ["oklch(15% 0.07 35)", "oklch(25% 0.09 35)", "oklch(35% 0.12 35)", "oklch(45% 0.15 35)", "oklch(56% 0.17 35)", "oklch(68% 0.14 35)", "oklch(81% 0.09 35)", "oklch(94% 0.04 35)"] },
+      "information": { "role": "secondary", "displayName": "Slate Information", "canonical": "#425e6b", "tonalRamp": ["oklch(15% 0.04 225)", "oklch(25% 0.05 225)", "oklch(35% 0.06 225)", "oklch(45% 0.07 225)", "oklch(56% 0.075 225)", "oklch(68% 0.065 225)", "oklch(81% 0.045 225)", "oklch(94% 0.025 225)"] },
+      "sage-wash": { "role": "neutral", "displayName": "Sage Wash", "canonical": "#e9ece5", "tonalRamp": ["oklch(15% 0.012 130)", "oklch(25% 0.015 130)", "oklch(35% 0.018 130)", "oklch(45% 0.02 130)", "oklch(58% 0.022 130)", "oklch(70% 0.02 130)", "oklch(83% 0.018 130)", "oklch(94% 0.015 130)"] },
+      "paper-warm": { "role": "neutral", "displayName": "Warm Stone", "canonical": "#f0ede5", "tonalRamp": ["oklch(15% 0.012 90)", "oklch(25% 0.015 90)", "oklch(35% 0.018 90)", "oklch(45% 0.02 90)", "oklch(58% 0.022 90)", "oklch(70% 0.02 90)", "oklch(83% 0.018 90)", "oklch(94% 0.015 90)"] },
+      "sage-gray": { "role": "neutral", "displayName": "Sage Gray", "canonical": "#e7e9e2", "tonalRamp": ["oklch(15% 0.012 130)", "oklch(25% 0.015 130)", "oklch(35% 0.018 130)", "oklch(45% 0.02 130)", "oklch(58% 0.022 130)", "oklch(70% 0.02 130)", "oklch(83% 0.018 130)", "oklch(94% 0.015 130)"] },
+      "card-hover": { "role": "neutral", "displayName": "Card Hover Stone", "canonical": "#e8e4da", "tonalRamp": ["oklch(15% 0.012 90)", "oklch(25% 0.015 90)", "oklch(35% 0.018 90)", "oklch(45% 0.02 90)", "oklch(58% 0.022 90)", "oklch(70% 0.02 90)", "oklch(83% 0.018 90)", "oklch(94% 0.015 90)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Editorial Display", "purpose": "Used for the image-led homepage hero and large place-focused headings." },
+      "body": { "displayName": "Reading Sans", "purpose": "Used for navigation, body copy, controls, and compact evidence labels." },
+      "label": { "displayName": "Eyebrow Label", "purpose": "Short tracked uppercase section labels; not long-form or essential instructions." }
+    },
+    "shadows": [
+      { "name": "float", "value": "0 12px 32px rgb(32 43 48 / 10%)", "purpose": "Occasional elevated drawers and menus; keep the editorial page mostly flat." },
+      { "name": "map-pin", "value": "0 1px 5px rgb(32 43 48 / 28%)", "purpose": "Keeps white map-pin markers legible against map content." }
+    ],
+    "motion": [
+      { "name": "control-feedback", "value": "140-220ms; button transition 200ms", "purpose": "Small color and position feedback on interactive controls." },
+      { "name": "editorial-reveal", "value": "440ms cubic-bezier(.2,.65,.25,1)", "purpose": "Subtle opacity and 16px vertical reveal for content entering view." },
+      { "name": "hero-entry", "value": "620ms cubic-bezier(.2,.65,.25,1)", "purpose": "Staggered, small vertical entrance for hero copy and actions." },
+      { "name": "reduced-motion", "value": "Near-zero animation and transition duration; reveal content immediately", "purpose": "Honors prefers-reduced-motion while keeping all content available." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Direct next steps such as Explore Japan; compact, high-contrast, and visible to keyboard users.",
+      "html": "<button class=\"ds-button-primary\">Explore Japan</button>",
+      "css": ".ds-button-primary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; border: 0; border-radius: 2px; background: var(--color-accent); color: #fff; font: 600 14px/1.25 var(--font-sans); transition: background-color 200ms, color 200ms, transform 200ms; } .ds-button-primary:hover { background: var(--color-accent-hover); transform: translateY(-1px); } .ds-button-primary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; } .ds-button-primary:active { transform: scale(.99); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A quieter alternative action, used for context or secondary discovery paths.",
+      "html": "<button class=\"ds-button-secondary\">How MICHI works</button>",
+      "css": ".ds-button-secondary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; border: 1px solid rgb(32 43 48 / 20%); border-radius: 2px; background: transparent; color: var(--color-foreground); font: 600 14px/1.25 var(--font-sans); transition: background-color 200ms, border-color 200ms, transform 200ms; } .ds-button-secondary:hover { border-color: rgb(32 43 48 / 50%); background: rgb(32 43 48 / 5%); transform: translateY(-1px); } .ds-button-secondary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; } .ds-button-secondary:active { transform: scale(.99); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "A clearly outlined, labeled field used in search and preference forms.",
+      "html": "<label class=\"ds-field-label\">Search places<input class=\"ds-input\" type=\"text\" placeholder=\"A city or interest\" /></label>",
+      "css": ".ds-field-label { display: grid; gap: 8px; color: var(--color-foreground); font: 500 14px/1.4 var(--font-sans); } .ds-input { width: 100%; min-height: 48px; padding: 0 16px; border: 1px solid rgb(32 43 48 / 20%); border-radius: 2px; background: #fff; color: var(--color-foreground); font: 400 14px/1.4 var(--font-sans); } .ds-input::placeholder { color: rgb(32 43 48 / 45%); } .ds-input:focus { border-color: var(--color-accent); outline: 0; box-shadow: 0 0 0 2px rgb(150 59 43 / 15%); }"
+    },
+    {
+      "name": "Public Navigation",
+      "kind": "nav",
+      "description": "Sticky public navigation with simple links and a clear exploration action.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a href=\"#discover\">Discover</a><a href=\"#experiences\">Experiences</a><a href=\"#destinations\">Destinations</a><a href=\"#about\">How It Works</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 28px; padding: 16px 24px; border-bottom: 1px solid rgb(32 43 48 / 10%); background: rgb(247 245 239 / 95%); color: var(--color-foreground); } .ds-nav a { color: rgb(32 43 48 / 80%); font: 500 13px/1.4 var(--font-sans); text-decoration: none; transition: color 180ms; } .ds-nav a:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 4px; } .ds-nav a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; } @media (max-width: 1023px) { .ds-nav { gap: 16px; flex-wrap: wrap; } }"
+    },
+    {
+      "name": "Source Status Badge",
+      "kind": "chip",
+      "description": "Text-bearing verification or freshness status; meaning stays clear without color alone.",
+      "html": "<span class=\"ds-status-badge\">Verified official</span>",
+      "css": ".ds-status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid rgb(32 43 48 / 15%); background: var(--color-background); color: rgb(32 43 48 / 75%); font: 600 10px/1.4 var(--font-sans); letter-spacing: .14em; text-transform: uppercase; } .ds-status-badge[data-status=\"stale\"] { border-color: rgb(139 75 47 / 30%); background: #f6e9e0; color: #733821; }"
+    },
+    {
+      "name": "External Experience Card",
+      "kind": "card",
+      "description": "Informational operator listing with provenance and official link; not a MICHI booking card.",
+      "html": "<article class=\"ds-experience-card\"><div class=\"ds-experience-card__title\"><p>External information · Kanazawa</p><h3>Experience title</h3></div><div class=\"ds-experience-card__body\"><p>Operator and source details stay visible.</p><span>View official experience ↗</span></div></article>",
+      "css": ".ds-experience-card { overflow: hidden; border: 1px solid rgb(32 43 48 / 10%); background: #fff; color: var(--color-foreground); transition: border-color 200ms; } .ds-experience-card:hover { border-color: rgb(32 43 48 / 30%); } .ds-experience-card__title { display: flex; min-height: 208px; flex-direction: column; justify-content: flex-end; padding: 24px; border-bottom: 1px solid rgb(32 43 48 / 10%); background: var(--color-surface-muted); } .ds-experience-card__title p { color: var(--color-accent); font: 700 10px/1.4 var(--font-sans); letter-spacing: .19em; text-transform: uppercase; } .ds-experience-card__title h3 { margin: 12px 0 0; font: 400 30px/1.2 var(--font-serif); } .ds-experience-card__body { display: grid; gap: 16px; padding: 24px; font: 400 14px/1.5 var(--font-sans); } .ds-experience-card__body span { color: var(--color-accent); font-size: 12px; font-weight: 600; }"
+    },
+    {
+      "name": "Photo Credit",
+      "kind": "custom",
+      "description": "Adjacent attribution links for the creator and license of documentary imagery.",
+      "html": "<p class=\"ds-photo-credit\">Photo: <a href=\"#creator-source\">Creator</a> · <a href=\"#license\">License</a> · cropped for layout</p>",
+      "css": ".ds-photo-credit { color: rgb(32 43 48 / 70%); font: 400 12px/1.65 var(--font-sans); } .ds-photo-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; } .ds-photo-credit a:hover { color: var(--color-accent); } .ds-photo-credit a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Considered Travel Journal",
+    "overview": "MICHI's implemented public experience pairs the calm reading rhythm of a travel journal with the clarity of an evidence-led discovery product. Warm paper, deep ink, restrained vermilion, generous image space, and editorial serif headings make Japan and its places the focus. The traveler discovery journey leads; responsible recommendations are the signature next step, and guest browsing is useful before sign-in.\n\nThe current public homepage opens with a documentary Kenrokuen Garden photograph, visible credit, and direct discovery actions, then moves into real destination choices and responsible-travel context. Source status, booking distinctions, and missing evidence are stated where they matter. This document records the frontend system in code; it is not a visual approval of the homepage capture. Host, DMO, and admin dashboards are not represented as redesigned here.",
+    "keyCharacteristics": [
+      "Image-led travel storytelling with place, creator, and license context.",
+      "Warm neutral surfaces and confident, readable ink typography.",
+      "Direct public exploration before account creation.",
+      "Factual states and provenance remain visible in the interface."
+    ],
+    "rules": [
+      { "name": "The Evidence Stays Legible Rule", "body": "Color never carries verification, health, warning, or booking meaning by itself; use a text label or accessible icon as well.", "section": "colors" }
+    ],
+    "dos": [
+      "Do keep public discovery useful to guests before sign-in.",
+      "Do use the verified Kenrokuen image with its adjacent linked creator and license credit; use only verified, attributed documentary imagery for real places.",
+      "Do preserve source, verification, freshness, and booking distinctions close to the decision they inform.",
+      "Do keep unavailable destination-health evidence explicitly unavailable.",
+      "Do honor visible keyboard focus and `prefers-reduced-motion`; make content available without entrance animation.",
+      "Do pair status colors with text or accessible icon labels."
+    ],
+    "donts": [
+      "Don't use generated concept artwork as factual destination, operator, or activity photography.",
+      "Don't present external listings as bookable through MICHI without host authorization and real capacity.",
+      "Don't present principles as measured community outcomes or fabricate destination health, inventory, access, or partnerships.",
+      "Don't use stereotypical Japanese motifs or generic AI-dashboard styling as visual shorthand.",
+      "Don't turn every group of content into a rounded, floating card."
+    ]
+  }
+}

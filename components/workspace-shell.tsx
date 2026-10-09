@@ -35,7 +35,7 @@ function WorkspaceNav({ role, basePath, closeOnNavigate = false }: { role: strin
     {pagesFor(role).map(({ label, icon: Icon, href, absolute }) => {
       const target = absolute ? href : `${basePath}${href}`;
       const active = pathname === target;
-      const link = <Link href={target} aria-current={active ? "page" : undefined} className={`flex min-h-11 items-center gap-3 px-3 text-sm ${active ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5 hover:text-ink"}`}><Icon className="size-4" aria-hidden="true" />{label}</Link>;
+      const link = <Link href={target} aria-current={active ? "page" : undefined} className={`flex min-h-11 items-center gap-3 border-l-2 px-3 text-sm transition-colors ${active ? "border-vermilion bg-paper-deep font-semibold text-ink" : "border-transparent text-ink/70 hover:bg-ink/5 hover:text-ink"}`}><Icon className="size-4" aria-hidden="true" />{label}</Link>;
       return closeOnNavigate ? <DrawerClose key={label} asChild>{link}</DrawerClose> : <Fragment key={label}>{link}</Fragment>;
     })}
   </nav>;
@@ -65,7 +65,7 @@ export function WorkspaceShell({ role, basePath, children }: { role: string; bas
       </div>
     </header>
     <div className="mx-auto flex max-w-[1600px]">
-      <aside className="hidden min-h-[calc(100vh-4rem)] w-64 shrink-0 border-r border-ink/10 px-5 py-7 lg:block">
+      <aside className="hidden min-h-[calc(100vh-4rem)] w-64 shrink-0 border-r border-ink/10 bg-paper px-5 py-7 lg:block">
         <p className="mb-4 px-3 text-[10px] font-semibold uppercase tracking-[0.17em] text-ink/45">Workspace</p><WorkspaceNav role={role} basePath={basePath} />
         <div className="mt-10 border-t border-ink/10 pt-6"><p className="px-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-ink/45">Account access is role protected</p></div>
         <Link className="mt-10 inline-flex items-center gap-2 px-3 text-xs text-ink/55 hover:text-vermilion" href="/"><ArrowLeft className="size-3.5" /> Public site</Link>

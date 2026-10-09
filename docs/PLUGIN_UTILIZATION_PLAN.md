@@ -42,4 +42,25 @@ Record tool availability and actual use for MICHI's premium product redesign. Th
 
 ## Final use log
 
-Update this table after implementation with concrete outputs, screenshots, tests, and limitations. This document is not evidence that an action was completed until its output is recorded here.
+| Tool | Actual action / output | Limitation |
+|---|---|---|
+| Impeccable | Read the frontend context and craft-floor workflow; created a product truth file, a selected image-led concept, a source-backed concept revision, design tokens, and surface briefs. The browser visual pass found and drove corrections to the homepage display sizing and destination section navigation. | The automated plate matching stage could not treat UI-composited photo panels as standalone plates, so it was not advanced or reported as passed. No generated concept image is used as documentary product photography. |
+| Image generation | Produced three early composition references and an image-led concept reference. | Generated imagery remains in the design-reference folder and is excluded from the live site because it is not factual destination photography. |
+| Frontend UI Engineering skill | Applied its composition, semantics, responsive layout, state, and accessibility guidance to the code edits. | Skill guidance is not a formal accessibility certification. |
+| Codex in-app browser | Tested homepage, Discover, Kanazawa detail, and guest itinerary builder; verified the mobile navigation opens and closes with Escape, tested one guest recommendation request and search/filter behavior, and inspected 320px / 390px renderings. | Authenticated traveler/host/DMO/admin accounts were not available for visual regression; external service pages were not submitted to. |
+| Supabase connector | Read-only project/data context informed accurate empty-host and unavailable-health copy. | No schema or hosted data changes were made for this visual phase. |
+| GitHub / local Git | Continued on `feature/michi-premium-redesign`; Stage 14.5A audit checkpoint is present in branch history. | Final code checkpoint/push is pending the test and visual-QA report. |
+| Figma | Account/design access was checked. | The connected design file is view-only; no editable Figma artifact was created. |
+| Canva | Brand/design inventory was checked. | No MICHI Brand Kit or existing design was available; Canva was not needed for application UI. |
+| Vercel | Project availability was checked. | No MICHI project is available; no preview or production deployment was created. |
+| BrowserAct | Tool availability was checked. | BrowserAct MCP actions are unavailable in this session; the Codex browser was used instead. |
+| Ace Knowledge Graph / Graph Mode / Ponytail | Availability and relevance were checked. | No graph output or repository-wide simplification was needed for this visual task. |
+
+## Browser evidence collected
+
+- Homepage screenshot reviewed at desktop and 390px phone width.
+- Discover page inspected at 320px and 390px; content filters, catalog search, and one guest recommendations request were exercised.
+- Kanazawa detail reviewed at 320px; the secondary navigation was changed from a clipped horizontal strip to a mobile-wrapping row. It remains sticky at larger sizes.
+- Guest itinerary builder opened at 320px and reviewed for wrapping and control layout.
+
+See `docs/VISUAL_QA_REPORT.md` for the measurements and limitations. This use log records only actions actually performed.

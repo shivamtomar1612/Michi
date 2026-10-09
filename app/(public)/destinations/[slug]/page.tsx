@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CircleHelp, MapPin } from "lucide-react";
 import { DataSourceBadge, DataStatusBadge, LastVerified, OfficialSourceLink, isRecordStale } from "@/components/data-provenance";
@@ -16,6 +17,8 @@ import { MapExplorer } from "@/components/map-explorer";
 import { buildCatalogueMapData } from "@/features/maps/catalogue";
 import { AnalyticsView } from "@/components/analytics-view";
 import { ContentReportLink } from "@/components/admin/content-report-link";
+import { getDestinationPhoto } from "@/features/destinations/photography";
+import { PhotoCredit } from "@/components/photo-credit";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -47,6 +50,7 @@ export default async function DestinationDetailPage({ params }: Props) {
     alternativeIds: alternatives.map((item) => item.id),
   });
   const stale = isRecordStale(destination.next_verification_at);
+  const destinationPhoto = getDestinationPhoto(destination.slug);
   const officialSignalUrl = destination.slug === "kyoto"
     ? "https://global.kyoto.travel/en/comfort/"
     : destination.slug === "kanazawa"
@@ -56,15 +60,22 @@ export default async function DestinationDetailPage({ params }: Props) {
   return <>
     <AnalyticsView eventName="destination_viewed" destinationId={destination.id} />
     <div className="container-editorial pt-6"><Link href="/destinations" className="inline-flex min-h-11 items-center gap-2 text-sm text-ink/70 hover:text-vermilion"><ArrowLeft className="size-4" aria-hidden="true" />All destinations</Link></div>
-    <header className="container-editorial mt-3 border-y border-ink/15 bg-[#e9e5dc] px-6 py-12 sm:px-10 sm:py-16 lg:py-20">
-      <div className="flex flex-wrap items-center gap-3"><DataStatusBadge status={destination.data_status} stale={stale} /><DataSourceBadge name={destination.source_name} sourceType={destination.source_type} stale={stale} /></div>
-      <p className="mt-7 inline-flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-ink/60"><MapPin className="size-3.5" aria-hidden="true" />{destination.city ?? destination.name} · {destination.prefecture} · {destination.region}</p>
-      <h1 className="mt-2 font-serif text-5xl tracking-[-0.04em] sm:text-7xl">{destination.name}</h1>
-      {destination.name_ja ? <p lang="ja" className="mt-2 text-lg text-ink/65">{destination.name_ja}</p> : null}
-      <p className="mt-6 max-w-3xl text-base leading-7 text-ink/75">{destination.description ?? "A source-backed destination description is not yet available."}</p>
-      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2"><OfficialSourceLink href={destination.source_url} /><LastVerified date={destination.last_verified_at} stale={stale} /><ContentReportLink subjectType="destination" subjectId={destination.id} /></div>
+    <header className="container-editorial relative mt-3 min-h-[430px] overflow-hidden bg-paper-deep sm:min-h-[500px]">
+      {destinationPhoto ? <Image src={destinationPhoto.src} alt={destinationPhoto.alt} fill loading="eager" sizes="(max-width: 1280px) 100vw, 1280px" className="object-cover object-center" /> : null}
+      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-ink/25 via-transparent to-transparent" />
+      <div className="relative flex min-h-[430px] items-end p-5 sm:min-h-[500px] sm:p-9 lg:p-12">
+        <div className="max-w-2xl bg-paper/95 p-5 sm:p-8">
+          <div className="flex flex-wrap items-center gap-3"><DataStatusBadge status={destination.data_status} stale={stale} /><DataSourceBadge name={destination.source_name} sourceType={destination.source_type} stale={stale} /></div>
+          <p className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-ink/60"><MapPin className="size-3.5" aria-hidden="true" />{destination.city ?? destination.name} · {destination.prefecture} · {destination.region}</p>
+          <h1 className="mt-2 font-serif text-5xl tracking-[-0.04em] sm:text-7xl">{destination.name}</h1>
+          {destination.name_ja ? <p lang="ja" className="mt-2 text-lg text-ink/65">{destination.name_ja}</p> : null}
+          <p className="mt-5 max-w-3xl text-base leading-7 text-ink/75">{destination.description ?? "A source-backed destination description is not yet available."}</p>
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2"><OfficialSourceLink href={destination.source_url} /><LastVerified date={destination.last_verified_at} stale={stale} /><ContentReportLink subjectType="destination" subjectId={destination.id} /></div>
+        </div>
+      </div>
     </header>
-    <nav aria-label="On this page" className="sticky top-[4.5rem] z-20 border-y border-ink/10 bg-paper/95 backdrop-blur-sm"><div className="container-editorial flex gap-6 overflow-x-auto">{[{ href: "#overview", label: "Overview" }, { href: "#places", label: "Places" }, { href: "#experiences", label: "External experiences" }, { href: "#health", label: "Visitor signals" }].map((item) => <a key={item.href} href={item.href} className="min-h-12 shrink-0 content-center text-xs font-medium text-ink/70 hover:text-vermilion">{item.label}</a>)}</div></nav>
+    {destinationPhoto ? <div className="container-editorial flex justify-end py-2"><PhotoCredit photo={destinationPhoto} className="text-ink/70" /></div> : null}
+    <nav aria-label="On this page" className="relative z-20 border-y border-ink/10 bg-paper/95 backdrop-blur-sm sm:sticky sm:top-[4.5rem]"><div className="container-editorial flex flex-wrap gap-x-5 sm:flex-nowrap sm:gap-6">{[{ href: "#overview", label: "Overview" }, { href: "#places", label: "Places" }, { href: "#experiences", label: "External experiences" }, { href: "#health", label: "Visitor signals" }].map((item) => <a key={item.href} href={item.href} className="min-h-12 content-center text-xs font-medium text-ink/70 hover:text-vermilion">{item.label}</a>)}</div></nav>
     <div className="container-editorial grid gap-12 py-12 lg:grid-cols-[1fr_0.72fr] lg:gap-20 lg:py-16">
       <div className="min-w-0">
         <section id="overview" className="scroll-mt-28"><p className="eyebrow">Source-backed overview</p><h2 className="mt-3 font-serif text-3xl">A little context before you go.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-ink/70">{destination.description ?? "Description not yet verified."}</p><div className="mt-7"><MapExplorer title={`Map of ${destination.name} and sourced alternatives`} description="Green means Healthy or Good, amber means Moderate Pressure, and red means High or Critical Pressure. Unavailable health evidence is gray. Other-region markers are for comparison only, not personalized recommendations." points={mapData.points} fallbackItems={mapData.fallbackItems} listTitle="Destination, place, and experience list" /></div></section>

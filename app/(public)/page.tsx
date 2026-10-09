@@ -1,13 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowDown, ArrowRight, ArrowUpRight, BookOpenCheck, Compass, HeartHandshake, MapPin } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
-import { DestinationCard } from "@/components/destination-card";
 import { CatalogueUnavailable } from "@/components/catalogue-unavailable";
 import { ExperienceCard } from "@/components/experience-card";
 import { MotionReveal } from "@/components/motion-reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { listDestinations, listExternalExperiences } from "@/server/data/catalogue";
 import { EmptyState } from "@/components/ui/states";
+import { getDestinationPhoto } from "@/features/destinations/photography";
+import { PhotoCredit } from "@/components/photo-credit";
 
 const journey = ["Discover", "Understand", "Choose responsibly", "Connect", "Reflect"];
 
@@ -16,18 +18,38 @@ export default async function HomePage() {
   const destinations = destinationResult.ok ? destinationResult.data : [];
   const experiences = experienceResult.ok ? experienceResult.data : [];
   const catalogueFailure = !destinationResult.ok ? destinationResult : !experienceResult.ok ? experienceResult : null;
+  const heroPhoto = getDestinationPhoto("kanazawa");
   return <>
-    <section className="relative isolate min-h-[640px] overflow-hidden bg-ink sm:min-h-[700px] lg:min-h-[min(790px,calc(100svh-4.5rem))]" aria-labelledby="hero-title">
-      <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-70 [background-image:radial-gradient(ellipse_at_82%_18%,rgba(150,74,54,.36),transparent_42%),linear-gradient(135deg,transparent_49.8%,rgba(255,255,255,.08)_50%,transparent_50.2%)] [background-size:100%_100%,96px_96px]" />
-      <div className="container-editorial flex min-h-[640px] items-center py-24 sm:min-h-[700px] lg:min-h-[min(790px,calc(100svh-4.5rem))]">
-        <div className="max-w-[760px] text-white">
-          <p className="hero-enter mb-7 inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/85"><span className="h-px w-8 bg-[#d57b61]" />A more considered way to explore Japan</p>
-          <h1 id="hero-title" className="hero-enter display-type max-w-[760px] text-white">Travel deeper.<br /><span className="text-[#ead8c5]">Leave lighter.</span></h1>
-          <p className="hero-enter mt-7 max-w-[570px] text-base leading-7 text-white/90 sm:text-lg sm:leading-8">Discover Japan through meaningful local experiences while respecting the communities and places that make them possible.</p>
-          <div className="hero-enter mt-9 flex flex-col gap-3 sm:flex-row"><ButtonLink href="/discover" variant="light">Explore Japan <ArrowRight className="size-4" /></ButtonLink><ButtonLink href="#how-it-works" variant="secondary" className="border-white/55 text-white hover:bg-white/10">How MICHI works <ArrowDown className="size-4" /></ButtonLink></div>
-          <Link href="/traveler/plan" className="hero-enter mt-4 inline-flex min-h-10 items-center gap-2 text-sm font-medium text-white/85 underline decoration-white/45 underline-offset-4 hover:text-white">Preview an itinerary <ArrowRight className="size-4" /></Link>
-          <div className="hero-enter mt-10 inline-flex items-center gap-2 text-xs text-white/80"><MapPin className="size-3.5" aria-hidden="true" />Japan · Culture · Community · Discovery</div>
+    <section className="relative isolate min-h-[620px] overflow-hidden bg-ink sm:min-h-[680px] lg:min-h-[min(760px,calc(100svh-4.5rem))]" aria-labelledby="hero-title">
+      <Image src="/images/kanazawa-kenrokuen.jpg" alt="The stone lantern and pond in Kenrokuen Garden, Kanazawa" fill loading="eager" sizes="100vw" className="-z-20 object-cover object-[center_48%]" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/20 via-transparent to-ink/5" />
+      <div className="container-editorial flex min-h-[620px] items-end py-8 sm:min-h-[680px] sm:py-10 lg:min-h-[min(760px,calc(100svh-4.5rem))]">
+        <div className="max-w-[760px] bg-paper/95 p-6 text-ink shadow-sm sm:p-9 lg:p-11">
+          <p className="hero-enter eyebrow">A more considered way to explore Japan</p>
+          <h1 id="hero-title" className="hero-enter hero-display-type mt-4 max-w-[700px] text-ink">Travel deeper.<br /><span className="text-vermilion">Leave lighter.</span></h1>
+          <p className="hero-enter mt-5 max-w-[500px] text-base leading-7 text-ink/75 sm:text-lg sm:leading-8">Find experiences that fit you, learn the context, and make room for the people and places that welcome you.</p>
+          <div className="hero-enter mt-7 flex flex-col gap-3 sm:flex-row"><ButtonLink href="/discover">Explore Japan <ArrowRight className="size-4" /></ButtonLink><ButtonLink href="#how-it-works" variant="secondary">How MICHI works <ArrowDown className="size-4" /></ButtonLink></div>
+          <Link href="/traveler/plan" className="hero-enter mt-2 inline-flex min-h-10 items-center gap-2 text-sm font-medium text-ink/75 underline decoration-ink/35 underline-offset-4 hover:text-vermilion">Preview an itinerary <ArrowRight className="size-4" /></Link>
         </div>
+      </div>
+      {heroPhoto ? <div className="absolute bottom-2 right-4 max-w-[calc(100%-2rem)] bg-ink/85 px-3 py-1.5 text-white sm:bottom-4 sm:right-6"><PhotoCredit photo={heroPhoto} /></div> : null}
+    </section>
+
+    <section className="border-b border-ink/10 bg-paper-deep py-10 sm:py-14" aria-labelledby="regions-heading">
+      <div className="container-editorial">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><h2 id="regions-heading" className="max-w-2xl font-serif text-3xl tracking-[-0.03em] sm:text-4xl">Choose with the place in mind.</h2><p className="max-w-md text-sm leading-6 text-ink/65">Three distinct places, with official context and a thoughtful way to explore.</p></div>
+        {destinations.length ? <div className="grid gap-4 md:grid-cols-[4fr_3fr_3fr]">{destinations.slice(0, 3).map((destination) => {
+          const photo = getDestinationPhoto(destination.slug);
+          return <article key={destination.slug} className="group min-w-0">
+            <Link href={`/destinations/${destination.slug}`} className="relative block aspect-[16/9] overflow-hidden bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion">
+              {photo ? <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.025]" /> : null}
+              <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent" />
+              <span className="absolute bottom-4 left-5 font-serif text-3xl text-white sm:text-4xl">{destination.name}</span>
+            </Link>
+            {photo ? <PhotoCredit photo={photo} className="mt-2 text-ink/70" /> : null}
+          </article>;
+        })}</div> : <Link href="/destinations" className="editorial-link text-sm font-semibold text-vermilion">Browse documented destinations <ArrowRight className="ml-1 inline size-4" /></Link>}
+        <Link href="/destinations" className="editorial-link mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-vermilion">All destinations <ArrowRight className="size-4" /></Link>
       </div>
     </section>
 
@@ -63,20 +85,23 @@ export default async function HomePage() {
     <section className="section-space">
       <div className="container-editorial">
         <MotionReveal className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><SectionHeading eyebrow="Local cultural experiences" title="Spend time with people who know this place." description="Experiences should make context, participation, and host-set capacity clear before a visitor commits." /><Link href="/experiences" className="editorial-link inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold text-vermilion"><span>All experiences</span><ArrowRight className="size-4" /></Link></MotionReveal>
-        {experienceResult.ok ? experiences.length ? <div className="editorial-scroll mt-9 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 md:grid md:grid-cols-3 md:overflow-visible">{experiences.slice(0, 3).map((experience) => <div key={experience.slug} className="w-[min(82vw,350px)] shrink-0 snap-start md:w-auto"><ExperienceCard experience={experience} destinationName={destinations.find((destination) => destination.id === experience.destination_id)?.name ?? "Destination not verified"} /></div>)}</div> : <div className="mt-8"><EmptyState title="No verified listings available" description="Official operator listings will appear after the reviewed catalogue is loaded." actionHref="/experiences" actionLabel="Browse experiences" /></div> : null}
+        {experienceResult.ok ? experiences.length ? <div className="editorial-scroll mt-9 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 md:grid md:grid-cols-3 md:overflow-visible">{experiences.slice(0, 3).map((experience) => {
+          const destination = destinations.find((item) => item.id === experience.destination_id);
+          return <div key={experience.slug} className="w-[min(82vw,350px)] shrink-0 snap-start md:w-auto"><ExperienceCard experience={experience} destinationName={destination?.name ?? "Destination not verified"} /></div>;
+        })}</div> : <div className="mt-8"><EmptyState title="No verified listings available" description="Official operator listings will appear after the reviewed catalogue is loaded." actionHref="/experiences" actionLabel="Browse experiences" /></div> : null}
       </div>
     </section>
 
     <section className="bg-[#f0ede5] section-space">
       <div className="container-editorial grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
         <MotionReveal><SectionHeading eyebrow="Cultural intelligence" title="Good guidance carries its source." description="MICHI is designed to explain reviewed evidence, not invent cultural answers. When reliable evidence is missing or conflicts, the right response is to say so." /><div className="mt-6 flex items-start gap-3 border-l-2 border-vermilion pl-4"><BookOpenCheck className="mt-1 size-5 shrink-0 text-vermilion" aria-hidden="true" /><p className="text-sm leading-6 text-ink/70">Gemini may help explain retrieved sources. It is never the cultural database.</p></div></MotionReveal>
-        <MotionReveal className="border border-ink/12 bg-[#fffefa] p-6 sm:p-8"><p className="eyebrow">Evidence-led guidance</p><h3 className="mt-4 max-w-lg font-serif text-2xl">Every cultural answer needs a source, scope, and review date.</h3><p className="mt-3 max-w-lg text-sm leading-6 text-ink/65">MICHI’s cultural companion is not connected yet. Until reviewed evidence is available for a question, it should say what is unknown instead of supplying an unsupported answer.</p><Link href="/about" className="editorial-link mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-vermilion">Read our information standards <ArrowRight className="size-4" /></Link></MotionReveal>
+        <MotionReveal className="border border-ink/12 bg-[#fffefa] p-6 sm:p-8"><p className="eyebrow">Evidence-led guidance</p><h3 className="mt-4 max-w-lg font-serif text-2xl">Every cultural answer needs a source, scope, and review date.</h3><p className="mt-3 max-w-lg text-sm leading-6 text-ink/65">On experience pages, ask MICHI about the place or activity. Answers are grounded in retrieved records and should make uncertainty clear when evidence is missing, stale, or conflicting.</p><Link href="/experiences" className="editorial-link mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-vermilion">Explore sourced experiences <ArrowRight className="size-4" /></Link></MotionReveal>
       </div>
     </section>
 
     <section className="bg-ink py-20 text-white sm:py-28">
       <div className="container-editorial">
-        <MotionReveal><div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20"><div><SectionHeading light eyebrow="Community-first tourism" title="Communities decide how they participate." description="A welcome is not inventory. Hosts set the terms, and can change discovery visibility without removing existing confirmed bookings." /><p className="mt-5 text-xs text-white/65">Host listing and booking controls are not connected yet.</p></div>
+        <MotionReveal><div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20"><div><SectionHeading light eyebrow="Community-first tourism" title="Communities decide how they participate." description="A welcome is not inventory. Hosts set the terms, and can change discovery visibility without removing existing confirmed bookings." /><p className="mt-5 text-xs text-white/65">No MICHI host listings are currently onboarded. External operator listings remain information-only until a host joins and verifies authorization.</p></div>
           <div className="grid gap-0 sm:grid-cols-3">{[{ title: "Consent", copy: "Hosts choose what they share and the terms of participation." }, { title: "Capacity", copy: "Availability and visitor limits stay under host control." }, { title: "Visibility", copy: "Hosts can pause discovery without removing confirmed bookings." }].map((item) => <article key={item.title} className="border-t border-white/25 py-5 sm:mx-4 sm:first:ml-0 sm:last:mr-0"><p className="font-serif text-2xl">{item.title}</p><p className="mt-3 text-sm leading-6 text-white/70">{item.copy}</p></article>)}</div></div></MotionReveal>
       </div>
     </section>
@@ -85,13 +110,6 @@ export default async function HomePage() {
       <div className="container-editorial grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
         <MotionReveal><SectionHeading eyebrow="How communities benefit" title="Local voices shape the exchange." description="Hosts choose what they share and how visitors take part. MICHI is designed to make that control visible before a traveler commits." /><p className="mt-5 text-xs text-ink/55">These are product principles, not measured outcomes.</p></MotionReveal>
         <div className="grid gap-x-8 sm:grid-cols-3">{[{ title: "Consent", copy: "Hosts decide what is shared and the terms of participation." }, { title: "Capacity", copy: "Availability and visitor limits remain in host control." }, { title: "Local value", copy: "Experiences make community-hosted exchange easier to find." }].map((item, index) => <MotionReveal key={item.title} delay={index * 60} className="border-t border-ink/20 py-5"><p className="font-serif text-xl">{item.title}</p><p className="mt-3 text-sm leading-6 text-ink/65">{item.copy}</p></MotionReveal>)}</div>
-      </div>
-    </section>
-
-    <section className="section-space">
-      <div className="container-editorial">
-        <MotionReveal className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><SectionHeading eyebrow="Featured regions" title="More than one way into Japan." description="Explore officially documented places with their source and verification details." /><Link href="/destinations" className="editorial-link inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-vermilion"><span>All destinations</span><ArrowRight className="size-4" /></Link></MotionReveal>
-        {destinationResult.ok ? destinations.length ? <div className="mt-9 grid gap-5 md:grid-cols-3">{destinations.slice(0, 3).map((destination, index) => <MotionReveal key={destination.slug} delay={index * 60}><DestinationCard destination={destination} /></MotionReveal>)}</div> : <div className="mt-8"><EmptyState title="No verified destinations available" description="Official destination records will appear here after the reviewed catalogue is loaded." actionHref="/destinations" actionLabel="Open destinations" /></div> : null}
       </div>
     </section>
 

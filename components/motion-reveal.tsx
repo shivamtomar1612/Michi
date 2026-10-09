@@ -10,12 +10,14 @@ export function MotionReveal({ children, className, delay = 0, ...props }: {
 } & HTMLAttributes<HTMLDivElement>) {
   const ref = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
+  const [motionReady, setMotionReady] = useState(false);
 
   useEffect(() => {
-    if (!ref.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (!ref.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
       setRevealed(true);
       return;
     }
+    setMotionReady(true);
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setRevealed(true);
@@ -26,5 +28,5 @@ export function MotionReveal({ children, className, delay = 0, ...props }: {
     return () => observer.disconnect();
   }, []);
 
-  return <div ref={ref} data-revealed={revealed} className={cn("motion-reveal", className)} style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties} {...props}>{children}</div>;
+  return <div ref={ref} data-motion-ready={motionReady || undefined} data-revealed={revealed} className={cn("motion-reveal", className)} style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties} {...props}>{children}</div>;
 }

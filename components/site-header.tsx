@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
@@ -13,37 +12,25 @@ const navLinks = [
   { label: "Discover", href: "/discover" },
   { label: "Experiences", href: "/experiences" },
   { label: "Destinations", href: "/destinations" },
-  { label: "How it works", href: "/about" },
+  { label: "How It Works", href: "/about" },
 ];
 
 export function SiteHeader({ account }: { account?: { name: string; role: string } | null }) {
   const pathname = usePathname();
-  const isHome = pathname === "/";
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 24);
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, []);
-
-  const transparent = isHome && !scrolled;
-  const placement = isHome ? (scrolled ? "fixed left-0 right-0 top-0" : "absolute left-0 right-0 top-0") : "sticky top-0";
-  return <header className={`${placement} z-40 border-b transition-colors duration-300 ${transparent ? "border-white/15 bg-ink/55 text-white backdrop-blur-sm" : "border-ink/10 bg-paper/95 text-ink backdrop-blur-sm"}`}>
+  return <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/95 text-ink backdrop-blur-sm">
     <div className="container-editorial flex h-[4.5rem] items-center justify-between">
-      <Logo light={transparent} />
+      <Logo />
       <nav aria-label="Main navigation" className="hidden items-center gap-7 lg:flex">
-        {navLinks.map((link) => <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined} className={`text-[13px] font-medium transition-colors hover:text-vermilion ${transparent ? "text-white/90" : "text-ink/80"}`}>{link.label}</Link>)}
+        {navLinks.map((link) => <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined} className="text-[13px] font-medium text-ink/80 transition-colors hover:text-vermilion">{link.label}</Link>)}
       </nav>
       <div className="hidden items-center gap-5 lg:flex">
-        {account ? <details className="relative"><summary className={`min-h-11 cursor-pointer content-center text-[13px] font-medium hover:text-vermilion ${transparent ? "text-white/90" : "text-ink/80"}`}>{account.name} ▾</summary><div className="absolute right-0 top-full z-50 mt-2 min-w-56 border border-ink/15 bg-paper p-2 text-ink shadow-xl"><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href={`/${account.role}`}>Workspace</Link>{account.role === "traveler" ? <><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/itineraries">My itineraries</Link><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/bookings">My bookings</Link><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/passport">Cultural Passport</Link><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/profile">Profile</Link></> : null}<form action={logoutAction}><button className="block min-h-10 w-full px-3 py-2 text-left text-sm text-vermilion hover:bg-ink/5" type="submit">Sign out</button></form></div></details> : <Link href="/auth/login" className={`min-h-11 content-center text-[13px] font-medium hover:text-vermilion ${transparent ? "text-white/90" : "text-ink/80"}`}>Sign in</Link>}
-        <ButtonLink href="/discover" size="small" variant={transparent ? "light" : "primary"}>Explore Japan</ButtonLink>
+        {account ? <details className="relative"><summary className="min-h-11 cursor-pointer content-center text-[13px] font-medium text-ink/80 hover:text-vermilion">{account.name} ▾</summary><div className="absolute right-0 top-full z-50 mt-2 min-w-56 border border-ink/15 bg-paper p-2 text-ink shadow-xl"><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href={`/${account.role}`}>Workspace</Link>{account.role === "traveler" ? <><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/itineraries">My itineraries</Link><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/bookings">My bookings</Link><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/passport">Cultural Passport</Link><Link className="block min-h-10 px-3 py-2 text-sm hover:bg-ink/5" href="/traveler/profile">Profile</Link></> : null}<form action={logoutAction}><button className="block min-h-10 w-full px-3 py-2 text-left text-sm text-vermilion hover:bg-ink/5" type="submit">Sign out</button></form></div></details> : <Link href="/auth/login" className="min-h-11 content-center text-[13px] font-medium hover:text-vermilion">Sign In</Link>}
+        <ButtonLink href="/discover" size="small">Explore Japan</ButtonLink>
       </div>
       <div className="flex items-center gap-3 lg:hidden">
-        <ButtonLink className="hidden sm:inline-flex" href="/discover" size="small" variant={transparent ? "light" : "primary"}>Explore Japan</ButtonLink>
+        <ButtonLink className="hidden sm:inline-flex" href="/discover" size="small">Explore Japan</ButtonLink>
         <Drawer>
-          <DrawerTrigger className={`inline-flex size-11 items-center justify-center border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion ${transparent ? "border-white/35 text-white hover:bg-white/10" : "border-ink/15 text-ink hover:bg-ink/5"}`} aria-label="Open navigation menu"><Menu className="size-5" /></DrawerTrigger>
+          <DrawerTrigger className="inline-flex size-11 items-center justify-center border border-ink/15 text-ink transition-colors hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion" aria-label="Open navigation menu"><Menu className="size-5" /></DrawerTrigger>
           <DrawerContent aria-describedby="mobile-navigation-description">
             <Logo />
             <DrawerTitle className="sr-only">MICHI navigation</DrawerTitle>
