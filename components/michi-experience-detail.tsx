@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowLeft, Clock3, MapPin, Users } from "lucide-react";
 import { CulturalCompanion } from "@/components/cultural-companion";
 import { CulturalEvidencePanel } from "@/components/cultural-evidence-panel";

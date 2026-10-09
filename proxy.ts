@@ -1,45 +1,71 @@
+import createIntlMiddleware from "next-intl/middleware";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/types/database";
 import { getSupabasePublicConfig } from "@/lib/supabase/env";
 import { hasSupabaseAuthCookie } from "@/lib/auth/redirects";
+import { routing } from "@/i18n/routing";
+
+const handleI18nRouting = createIntlMiddleware(routing);
+const protectedRoots = ["/traveler", "/host", "/dmo", "/admin"];
+
+function copyCookies(source: NextResponse, target: NextResponse) {
+  for (const { name, value, ...options } of source.cookies.getAll()) {
+    target.cookies.set(name, value, options);
+  }
+}
 
 export async function proxy(request: NextRequest) {
-  const protectedPath = ["/traveler", "/host", "/dmo", "/admin"].some((path) => request.nextUrl.pathname === path || request.nextUrl.pathname.startsWith(`${path}/`));
-  // The planner is a public preview. Its page checks the user once to show saved journeys.
-  const publicPlanner = request.nextUrl.pathname.replace(/\/$/u, "") === "/traveler/plan";
+  const intlResponse = handleI18nRouting(request);
+  const pathname = request.nextUrl.pathname;
+  const [firstSegment, ...rest] = pathname.split("/").filter(Boolean);
+  if (!routing.locales.includes(firstSegment as (typeof routing.locales)[number])) return intlResponse;
+
+  const logicalPath = `/${rest.join("/")}`;
+  const protectedPath = protectedRoots.some((path) => logicalPath === path || logicalPath.startsWith(`${path}/`));
+  const publicPlanner = logicalPath.replace(/\/$/u, "") === "/traveler/plan";
+  if (!protectedPath || publicPlanner) return intlResponse;
+
+  const loginUrl = () => {
+    const url = new URL(`/${firstSegment}/auth/login`, request.url);
+    url.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
+    return url;
+  };
+
   if (!hasSupabaseAuthCookie(request.cookies.getAll())) {
-    if (protectedPath && !publicPlanner) {
-      const login = new URL("/auth/login", request.url);
-      login.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
-      return NextResponse.redirect(login);
-    }
-    return NextResponse.next({ request });
+    const redirect = NextResponse.redirect(loginUrl());
+    copyCookies(intlResponse, redirect);
+    return redirect;
   }
 
   const config = getSupabasePublicConfig();
-  if (!config) return NextResponse.next({ request });
+  if (!config) return intlResponse;
 
-  let response = NextResponse.next({ request });
+  let authResponse = NextResponse.next({ request });
   const supabase = createServerClient<Database>(config.url, config.key, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll(cookiesToSet, headers) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
-        for (const [name, value] of Object.entries(headers ?? {})) response.headers.set(name, value);
+        authResponse = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) => authResponse.cookies.set(name, value, options));
+        for (const [name, value] of Object.entries(headers ?? {})) authResponse.headers.set(name, value);
       },
     },
   });
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (protectedPath && !publicPlanner && !user) {
-    const login = new URL("/auth/login", request.url);
-    login.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
-    return NextResponse.redirect(login);
+  const { data: claims, error } = await supabase.auth.getClaims();
+  if (error || !claims?.claims?.sub) {
+    const redirect = NextResponse.redirect(loginUrl());
+    copyCookies(intlResponse, redirect);
+    copyCookies(authResponse, redirect);
+    return redirect;
   }
-  return response;
+
+  copyCookies(authResponse, intlResponse);
+  return intlResponse;
 }
 
-export const config = { matcher: ["/traveler/:path*", "/host/:path*", "/dmo/:path*", "/admin/:path*"] };
+export const config = {
+  matcher: ["/((?!api|_next|_vercel|auth/callback|.*\\..*).*)"],
+};

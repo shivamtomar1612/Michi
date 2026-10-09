@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { X } from "lucide-react";
 
 export function TravelerBookingActions({ bookingId }: { bookingId: string }) {

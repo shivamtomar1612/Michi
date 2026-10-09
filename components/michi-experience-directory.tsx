@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Clock3, Users } from "lucide-react";
 import { getSupabasePublicConfig } from "@/lib/supabase/env";
 import type { PublicDestination, PublicMichiExperience } from "@/server/data/catalogue";
