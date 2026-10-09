@@ -12,9 +12,9 @@ Public discovery includes source-backed destinations and places plus verified ex
 
 ## Current development checkpoint
 
-- Phases 0–12 are represented in the application; Phase 12.5 documents a localhost and performance stabilization pass.
-- Phase 13 has not started.
-- The latest stabilization report records passing lint, TypeScript, unit-test, and production-build checks. It also records limits: authenticated role workflows were not exercised, no Playwright suite is configured, and the hosted catalogue has no MICHI host experiences or availability slots. See [the recovery report](docs/LOCALHOST_RECOVERY_REPORT.md) and [performance audit](docs/PERFORMANCE_AUDIT.md).
+- Phases 0–17 are integrated on `main`. The latest baseline is `52cd0fa9f4ae1315fd57fd659672f39c794dfa60`; its GitHub Actions CI run passed on 2026-10-09.
+- Phase 18 release preparation is in progress. No MICHI Vercel project is visible to the connected Vercel account, so no preview or production deployment has been verified. Production release is not approved.
+- The Phase 12.5 stabilization report records passing lint, TypeScript, unit-test, and production-build checks, with limits: authenticated role workflows were not exercised, no Playwright suite is configured, and the hosted catalogue has no MICHI host experiences or availability slots. See [the recovery report](docs/LOCALHOST_RECOVERY_REPORT.md) and [performance audit](docs/PERFORMANCE_AUDIT.md).
 - The audited public catalogue snapshot contains three destinations, fifteen places, and three external listings. These records carry source provenance; source reviews and snapshot freshness are documented in [REAL_DATA.md](docs/REAL_DATA.md).
 - No real MICHI host, host-owned slot, community sentiment, or complete verified destination-health signal is manufactured to fill product gaps. Read [the production data audit](docs/PRODUCTION_DATA_AUDIT.md) and [production data recovery report](docs/PRODUCTION_DATA_RECOVERY.md) before treating the hosted service as launch-ready.
 
@@ -110,7 +110,7 @@ The current unit test setup covers `tests/unit/**/*.test.ts`. A Playwright end-t
 
 ## Known operational limitations
 
-The latest reports describe a working local build, not a blanket production certification. The hosted project has no verified MICHI host inventory or real slot capacity in the audited snapshot, so MICHI-managed booking availability depends on genuine host onboarding. Complete verified Destination Health scores require fresh, sourced evidence for every required component. Authenticated role workflows and live integrations still require deployment-specific verification. Consult the linked audit reports for exact evidence and remaining steps.
+The latest reports describe a working local build, not a blanket production certification. The hosted project has no verified MICHI host inventory or real slot capacity in the audited snapshot, so MICHI-managed booking availability depends on genuine host onboarding. Complete verified Destination Health scores require fresh, sourced evidence for every required component. Authenticated role workflows and live integrations still require deployment-specific verification. Consult [the audit reports](docs/FINAL_HANDOFF.md) for release status and exact remaining steps.
 
 ## License
 
