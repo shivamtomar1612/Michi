@@ -46,8 +46,10 @@ insert into public.places (
  original_language, location_scope, image_usage_status, content_hash
 )
 select d.id, s.id, v.name, v.name_ja, v.slug, v.place_type, v.description, v.source_url,
- v.source_name, v.source_url, regexp_replace(v.source_url, '/+$', ''), v.source_type, v.authority, timestamptz '2026-10-07 00:00:00+00', timestamptz '2026-10-07 00:00:00+00',
- timestamptz '2026-10-07 00:00:00+00' + interval '180 days', 'verified_official', 'official_tourism', v.language,
+ v.source_name, v.source_url, regexp_replace(v.source_url, '/+$', ''), v.source_type, v.authority,
+ case when v.slug = 'kanazawa-castle-park-gyokusen-inmaru' then timestamptz '2026-10-09 00:00:00+00' else timestamptz '2026-10-07 00:00:00+00' end,
+ case when v.slug = 'kanazawa-castle-park-gyokusen-inmaru' then timestamptz '2026-10-09 00:00:00+00' else timestamptz '2026-10-07 00:00:00+00' end,
+ case when v.slug = 'kanazawa-castle-park-gyokusen-inmaru' then timestamptz '2026-10-09 00:00:00+00' + interval '180 days' else timestamptz '2026-10-07 00:00:00+00' + interval '180 days' end, 'verified_official', 'official_tourism', v.language,
  v.city || ', Japan', 'do_not_display', md5(v.slug || '|' || v.description)
 from (values
  ('kyoto','central-kyoto-city','Kyoto Travel','official_city_tourism',4,'en','Kyoto','Central Kyoto City','京都市中心部','historic_district','Kyoto’s central area includes the Nishiki Market and Shijo area, historic sites, and traditional culture.','https://kyoto.travel/en/areas/central/'),
@@ -60,7 +62,7 @@ from (values
  ('kanazawa','nagamachi-samurai-district','VISIT KANAZAWA','official_city_tourism',4,'en','Kanazawa','Nagamachi Samurai District','長町武家屋敷跡','historic_district','A historic samurai district listed by the official Kanazawa tourism guide.','https://visitkanazawa.jp/en/attractions/detail_10195.html'),
  ('kanazawa','21st-century-museum-kanazawa','VISIT KANAZAWA','official_city_tourism',4,'en','Kanazawa','21st Century Museum of Contemporary Art, Kanazawa','金沢21世紀美術館','museum','A contemporary art museum listed by the official Kanazawa tourism guide.','https://visitkanazawa.jp/en/attractions/detail_10066.html'),
  ('kanazawa','omicho-market','VISIT KANAZAWA','official_city_tourism',4,'en','Kanazawa','Omicho Market','近江町市場','market','A food market listed by the official Kanazawa tourism guide. Current hours and vendor information are not stored.','https://visitkanazawa.jp/en/restaurants/detail_10030.html'),
- ('kanazawa','kanazawa-castle-park-gyokusen-inmaru','VISIT KANAZAWA','official_city_tourism',4,'en','Kanazawa','Kanazawa Castle Park and Gyokusen-inmaru Garden','金沢城公園・玉泉院丸庭園','castle','A historic park and garden listed by the official Kanazawa tourism guide.','https://visitkanazawa.jp/en/spot/index.html'),
+ ('kanazawa','kanazawa-castle-park-gyokusen-inmaru','VISIT KANAZAWA','official_city_tourism',4,'en','Kanazawa','Kanazawa Castle Park and Gyokusen-inmaru Garden','金沢城公園・玉泉院丸庭園','castle','A historic park and garden listed by the official Kanazawa tourism guide.','https://visitkanazawa.jp/en/feature/detail_537.html'),
  ('takayama','hida-takayama-old-town','Hida Takayama Official Tourism Guide','official_city_tourism',4,'ja','Takayama','Hida Takayama Old Town','飛騨高山 古い町並','historic_district','The official Takayama tourism guide describes the district as a historic castle-town and merchant area with Edo-period streetscape.','https://www.hidatakayama.or.jp/spot/detail_1101.html'),
  ('takayama','takayama-jinya','Hida Takayama Official Tourism Guide','official_city_tourism',4,'ja','Takayama','Takayama Jinya','高山陣屋','heritage_site','A surviving Edo-period government office and nationally designated historic site, as described by the official city tourism guide.','https://www.hidatakayama.or.jp/spot/detail_1106.html'),
  ('takayama','hida-folk-village','Hida Takayama Official Tourism Guide','official_city_tourism',4,'ja','Takayama','Hida Folk Village','飛騨民俗村・飛騨の里','museum','An open-air museum of relocated traditional houses from the Hida region, according to the official city tourism guide.','https://www.hidatakayama.or.jp/spot/detail_1104.html'),
