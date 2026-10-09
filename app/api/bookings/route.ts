@@ -2,13 +2,14 @@ import { NextResponse, type NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { bookingRequestSchema } from "@/features/bookings/schemas";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) return NextResponse.json({ error: "Invalid origin." }, { status: 403 });
-  const body = await request.text();
-  if (body.length > 4096) return NextResponse.json({ error: "Request is too large." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 4096);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Request is too large." : "Invalid request body." }, { status: bodyResult.status });
   let json: unknown;
-  try { json = JSON.parse(body); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
+  try { json = JSON.parse(bodyResult.body); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
   const parsed = bookingRequestSchema.safeParse(json);
   if (!parsed.success) return NextResponse.json({ error: "Check slot, guest count, and rules acknowledgment." }, { status: 400 });
   try {

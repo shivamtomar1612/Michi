@@ -1,17 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { passportReflectionSchema } from "@/features/passport/reflection-schema";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) {
     return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   }
-  const body = await request.text();
-  if (body.length > 5000) return NextResponse.json({ error: "Reflection is too long." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 5000);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Reflection is too long." : "Invalid request body." }, { status: bodyResult.status });
 
   let json: unknown;
   try {
-    json = JSON.parse(body);
+    json = JSON.parse(bodyResult.body);
   } catch {
     return NextResponse.json({ error: "Review the reflection form and try again." }, { status: 400 });
   }

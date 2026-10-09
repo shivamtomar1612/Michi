@@ -10,6 +10,7 @@ import { canPublishCulturalVerification } from "@/features/cultural-knowledge/au
 import { isCulturalRecordStale, detectCulturalConflicts } from "@/features/cultural-knowledge/model";
 import type { CulturalEvidenceRecord } from "@/features/cultural-knowledge/types";
 import { recordAdminAudit } from "@/server/admin/audit";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 const fail = (message: string, status = 400) => NextResponse.json({ error: message }, { status });
 
@@ -60,10 +61,10 @@ export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) return fail("Invalid request origin.", 403);
   const auth = await getKnowledgeAdmin();
   if (!auth.authorized) return fail("Administrator access is required.", auth.user ? 403 : 401);
-  const body = await request.text();
-  if (body.length > 16000) return fail("Request is too large.", 413);
+  const bodyResult = await readBoundedRequestBody(request, 16000);
+  if (!bodyResult.ok) return fail(bodyResult.status === 413 ? "Request is too large." : "Invalid request body.", bodyResult.status);
   let input: Record<string, unknown>;
-  try { input = JSON.parse(body) as Record<string, unknown>; } catch { return fail("Invalid request body."); }
+  try { input = JSON.parse(bodyResult.body) as Record<string, unknown>; } catch { return fail("Invalid request body."); }
   const action = input.action;
 
   if (action === "create_source") {

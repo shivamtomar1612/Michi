@@ -6,6 +6,7 @@ import type { Json } from "@/types/database";
 import { getRecommendations } from "@/server/recommendations/service";
 import { getExternalRecommendations } from "@/server/recommendations/external-service";
 import { allowGuestRequest, GUEST_RECOMMENDATION_LIMIT } from "@/server/security/guest-recommendation-limit";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 function tokyoDate(): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -22,12 +23,12 @@ export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) {
     return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   }
-  const body = await request.text();
-  if (body.length > 8192) return NextResponse.json({ error: "Preference form is too large." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 8192);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Preference form is too large." : "Invalid request body." }, { status: bodyResult.status });
 
   let json: unknown;
   try {
-    json = JSON.parse(body);
+    json = JSON.parse(bodyResult.body);
   } catch {
     return NextResponse.json({ error: "Invalid preference form." }, { status: 400 });
   }

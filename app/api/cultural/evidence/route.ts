@@ -6,13 +6,15 @@ import { retrieveCulturalEvidence } from "@/server/cultural-knowledge/service";
 import { createClient } from "@/lib/supabase/server";
 import { allowLocalEvidenceRequest } from "@/server/cultural-knowledge/rate-limit";
 import type { Database } from "@/types/database";
+import { readBoundedRequestBody } from "@/server/security/request-body";
+import { requiresSharedRateLimit } from "@/server/security/rate-limit-config";
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
-  const body = await request.text();
-  if (body.length > 4096) return NextResponse.json({ error: "Evidence query is too large." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 4096);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Evidence query is too large." : "Invalid request body." }, { status: bodyResult.status });
   let json: unknown;
-  try { json = JSON.parse(body); } catch { return NextResponse.json({ error: "Invalid evidence query." }, { status: 400 }); }
+  try { json = JSON.parse(bodyResult.body); } catch { return NextResponse.json({ error: "Invalid evidence query." }, { status: 400 }); }
   const parsed = evidenceRequestSchema.safeParse(json);
   if (!parsed.success) return NextResponse.json({ error: "Check the query and filters." }, { status: 400 });
   try {
@@ -21,6 +23,9 @@ export async function POST(request: NextRequest) {
     const salt = process.env.RATE_LIMIT_SALT ?? process.env.NEXT_PUBLIC_APP_URL ?? "michi-evidence-rate-v1";
     const requesterHash = createHash("sha256").update(salt + ":" + ip).digest("hex");
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
+    if (requiresSharedRateLimit(process.env.NODE_ENV, serviceKey)) {
+      return NextResponse.json({ error: "Evidence service is not ready." }, { status: 503 });
+    }
     if (serviceKey) {
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
       if (!url) return NextResponse.json({ error: "Evidence service is not ready." }, { status: 503 });

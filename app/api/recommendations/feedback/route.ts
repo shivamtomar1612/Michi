@@ -1,17 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { recommendationFeedbackSchema } from "@/features/recommendations/schemas";
 import { createClient } from "@/lib/supabase/server";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) {
     return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   }
-  const body = await request.text();
-  if (body.length > 2048) return NextResponse.json({ error: "Decision payload is too large." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 2048);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Decision payload is too large." : "Invalid request body." }, { status: bodyResult.status });
 
   let json: unknown;
   try {
-    json = JSON.parse(body);
+    json = JSON.parse(bodyResult.body);
   } catch {
     return NextResponse.json({ error: "Invalid decision." }, { status: 400 });
   }

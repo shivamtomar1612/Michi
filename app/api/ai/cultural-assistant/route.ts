@@ -8,13 +8,14 @@ import { getGeminiCulturalAnswerProvider } from "@/server/cultural-companion/gem
 import { allowLocalCulturalAssistantRequest } from "@/server/cultural-companion/rate-limit";
 import { retrieveCulturalEvidence } from "@/server/cultural-knowledge/service";
 import { createClient } from "@/lib/supabase/server";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
-  const body = await request.text();
-  if (body.length > 8192) return NextResponse.json({ error: "Conversation is too large." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 8192);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Conversation is too large." : "Invalid request body." }, { status: bodyResult.status });
   let json: unknown;
-  try { json = JSON.parse(body); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
+  try { json = JSON.parse(bodyResult.body); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
   const parsed = culturalAssistantRequestSchema.safeParse(json);
   if (!parsed.success) return NextResponse.json({ error: "Check the question and conversation context." }, { status: 400 });
 

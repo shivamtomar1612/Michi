@@ -8,6 +8,7 @@ import { getRecommendations } from "@/server/recommendations/service";
 import { getExternalRecommendations } from "@/server/recommendations/external-service";
 import { organizeWithGemini } from "@/server/itineraries/gemini-organizer";
 import { allowGuestRequest } from "@/server/security/guest-recommendation-limit";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 function idsFromLog(value: unknown, pathway: string): Set<string> {
   if (!Array.isArray(value)) return new Set();
@@ -17,10 +18,10 @@ function idsFromLog(value: unknown, pathway: string): Set<string> {
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
-  const body = await request.text();
-  if (body.length > 16_384) return NextResponse.json({ error: "Plan request is too large." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 16_384);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Plan request is too large." : "Invalid request body." }, { status: bodyResult.status });
   let json: unknown;
-  try { json = JSON.parse(body); } catch { return NextResponse.json({ error: "Invalid plan request." }, { status: 400 }); }
+  try { json = JSON.parse(bodyResult.body); } catch { return NextResponse.json({ error: "Invalid plan request." }, { status: 400 }); }
   const parsed = itineraryGenerateSchema.safeParse(json);
   if (!parsed.success) return NextResponse.json({ error: "Review the dates and preferences, then try again." }, { status: 400 });
 

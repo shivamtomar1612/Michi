@@ -1,17 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { destinationHealthEventSchema } from "@/lib/analytics/events";
 import { createClient } from "@/lib/supabase/server";
+import { readBoundedRequestBody } from "@/server/security/request-body";
 
 export async function POST(request: NextRequest) {
   const origin = request.headers.get("origin");
   if (!origin || origin !== request.nextUrl.origin) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
 
-  const body = await request.text();
-  if (body.length > 2048) return NextResponse.json({ error: "Event payload is too large." }, { status: 413 });
+  const bodyResult = await readBoundedRequestBody(request, 2048);
+  if (!bodyResult.ok) return NextResponse.json({ error: bodyResult.status === 413 ? "Event payload is too large." : "Invalid request body." }, { status: bodyResult.status });
 
   let json: unknown;
   try {
-    json = JSON.parse(body);
+    json = JSON.parse(bodyResult.body);
   } catch {
     return NextResponse.json({ error: "Invalid event payload." }, { status: 400 });
   }
