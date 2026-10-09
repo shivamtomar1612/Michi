@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { Archive, Camera, Check, Pause, Play, Plus, RotateCcw, Save, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";

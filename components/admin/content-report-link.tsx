@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export function ContentReportLink({ subjectType, subjectId }: { subjectType: "destination" | "place" | "experience" | "external_experience" | "cultural_content"; subjectId: string }) {
   const query = new URLSearchParams({ subjectType, subjectId });

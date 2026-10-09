@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Check, LoaderCircle } from "lucide-react";
 
 export function ExperienceReflectionForm({ bookingId, saved = false }: { bookingId: string; saved?: boolean }) {

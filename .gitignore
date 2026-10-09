@@ -33,6 +33,7 @@ Thumbs.db
 .vercel/
 .turbo/
 supabase/.temp/
+.swc-native-cache/
 
 # TypeScript build cache
 *.tsbuildinfo

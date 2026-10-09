@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useEffect, useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { buildResponsibleNudge } from "@/features/destination-health/engine";
