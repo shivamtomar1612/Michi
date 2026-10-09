@@ -23,7 +23,8 @@ export function LastVerified({ date, stale = false }: { date: string | null; sta
   const t = useTranslations("Evidence");
   const locale = useLocale() as Locale;
   if (!date) return <p className="text-xs text-ink/55">{t("verificationDateMissing")}</p>;
-  return <p className="text-xs text-ink/55">{stale ? t("lastVerified") : t("lastChecked")} {formatDateTime(date, locale, "Asia/Tokyo", { dateStyle: "medium" })}</p>;
+  const formattedDate = formatDateTime(date, locale, "Asia/Tokyo", { dateStyle: "medium" });
+  return <p className="text-xs text-ink/55">{stale ? `${t("lastVerified")} ${formattedDate}` : t("lastChecked", { date: formattedDate })}</p>;
 }
 
 export function OfficialSourceLink({ href, label }: { href: string | null; label?: string }) {
