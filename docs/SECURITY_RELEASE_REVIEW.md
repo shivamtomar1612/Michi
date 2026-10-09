@@ -12,6 +12,7 @@
 - `docs/PHASE_16_FINAL_REPORT.md` records local security checks, zero dependency-audit findings at that checkpoint, and blocked authenticated role, booking-concurrency, Playwright, mobile/keyboard, and adversarial Gemini checks.
 - `docs/PRODUCTION_DATA_RECOVERY.md` reports one traveler profile, zero MICHI hosts/slots/bookings, and zero destination-health signals in the audited hosted catalogue.
 - `docs/GEMINI_VERIFICATION_REPORT.md` records successful key authentication/model discovery but final live generation quota exhaustion (HTTP 429); live English/Japanese generation is not cleared.
+- The Gemini verification report also records that a key was disclosed in a prior conversation and explicitly recommends revocation and replacement. Rotation completion is not verified in this audit; treat the old key as compromised and confirm provider-side revocation before any deployment.
 - `docs/MAPS_INTEGRATION.md` and Phase 16 report leave Google key restrictions/billing to provider-side verification.
 - Connected Vercel account exposes only unrelated project `mind-over-money`, not MICHI.
 
