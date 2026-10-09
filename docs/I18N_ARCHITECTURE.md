@@ -1,24 +1,25 @@
 # MICHI internationalization architecture
 
-## Current implementation
+## Implementation
 
 - English (`en`) and Japanese (`ja`) are configured with `next-intl` 4 and the Next.js App Router.
-- Locale-prefixed routes use `/en/...` and `/ja/...`; `/` is redirected by the locale middleware. API routes and the Supabase auth callback remain unlocalized service endpoints.
-- `i18n/routing.ts` is the supported-locale source of truth. `i18n/navigation.ts` exports locale-aware `Link`, `redirect`, `usePathname`, `useRouter`, and `getPathname` helpers. UI links inside localized pages must use these helpers so navigation keeps the selected locale.
+- Locale-prefixed routes use `/en/...` and `/ja/...`; `/` redirects to `/en`. API routes and the Supabase auth callback remain unlocalized service endpoints.
+- `i18n/routing.ts` is the supported-locale source of truth. `i18n/navigation.ts` exports locale-aware navigation helpers. UI links inside localized pages use these helpers so navigation keeps the selected locale.
 - `i18n/request.ts` selects the message catalog, while `app/[locale]/layout.tsx` validates locale segments, sets the document `lang`, and provides messages.
-- English and Japanese catalogs are stored separately in `messages/en.json` and `messages/ja.json`. `tests/unit/i18n-messages.test.ts` checks namespace/key parity.
+- English and Japanese catalogs are stored in `messages/en.json` and `messages/ja.json`; unit tests enforce namespace/key parity.
+- Shared locale-aware formatters are in `i18n/formatters.ts`, with `Asia/Tokyo` as the default time zone.
 
 ## Localized product areas
 
-The landing page, public discovery/destination/experience browsing, map controls and list fallback, evidence badges, recommendation controls and explanations, authentication form labels, itinerary preference flow, workspace navigation labels, and Destination Health labels use localized message catalogs. Auth form redirects carry the selected locale. Shared date, time, number, and JPY formatting is in `i18n/formatters.ts` and uses the selected locale with `Asia/Tokyo` as the default time zone.
+The landing page, public discovery/destination/experience browsing, map controls and list fallback, evidence badges, recommendation controls and explanations, authentication forms, itinerary preference flow, workspace navigation, Destination Health labels, traveler profile, booking list, reflection form, Cultural Passport, and saved itinerary detail use localized UI messages.
 
 Verified source text is not automatically translated in the UI. Source descriptions and cultural guidance remain in their recorded language to avoid changing cultural meaning. They should be accompanied by source language metadata and translated editorial summaries only when a reviewed translation exists. This is particularly important for rules, accessibility, dietary safety, and operator instructions.
 
-## Remaining localization coverage
+## Coverage and review status
 
-Phase 15 is not a Japanese translation of every application surface yet. Auth action validation/service errors, booking/reflection forms, itinerary detail and sharing, passport, host, DMO, and admin pages still contain English UI strings. Database-provided status labels and some recommendation explanations may also be English. The Japanese locale must not be represented as complete until those interfaces have been translated and reviewed.
+Core traveler-facing localization and locale routing are implemented. Some operational host, DMO, and admin content, as well as some data-provided status and server-generated messages, remains English. Do not describe Japanese as a complete translation of every screen until this remaining coverage is addressed.
 
-The existing auth callback and API endpoints are intentionally not locale-prefixed. Redirect targets must preserve the initiating locale when returning to UI pages.
+Automated lint, type checking, unit tests, production build, and route smoke checks passed on 2026-10-09. Fluent Japanese review and assistive-technology review have not been performed and remain human release gates; see `docs/PHASE_15_TEST_REPORT.md` and `docs/JAPANESE_REVIEW_CHECKLIST.md`.
 
 ## Adding messages
 

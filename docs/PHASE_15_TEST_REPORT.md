@@ -1,30 +1,34 @@
-# Phase 15 test report
+# Phase 15 implementation and verification report
 
-## Engineering changes covered
+## Implemented
 
-- English and Japanese route configuration and message catalogs.
-- Locale-preserving navigation for localized route links.
-- Localized public discovery and recommendation surfaces, authentication form labels, itinerary preference flow, shared workspace navigation, and Destination Health UI labels.
-- Locale-aware date, time, and currency formatting.
-- Message-catalog parity and formatter unit tests.
+- English (`en`) and Japanese (`ja`) locale routing with locale-preserving navigation, localized metadata, and document language.
+- Message catalog parity checks and shared locale-aware date, time, number, and JPY formatting.
+- Localized landing, discovery, destination and experience browsing, recommendation controls, map fallbacks, provenance indicators, authentication forms, itinerary preference flow, shared workspace navigation, and Destination Health labels.
+- Localized traveler booking, profile, passport, saved-itinerary detail, and post-experience reflection interfaces, including errors, empty states, private-data explanations, dates, and currency.
+- Original source-authored cultural text and operator-provided records remain in their source language unless reviewed translations are present; names and source provenance are not silently rewritten.
+- Keyboard and semantic-accessibility foundations are present in shared navigation and interaction components. Human assistive-technology review is still required.
 
-## Automated results
-
-Results are recorded after the final validation run. Do not treat a successful unit-test suite as proof that every route is translated or that Japanese copy is culturally reviewed.
+## Automated verification (2026-10-09)
 
 | Check | Result |
 |---|---|
 | `npm run lint` | PASS |
-| `npm run typecheck` | PASS |
-| `npm test` | PASS — 21 test files, 123 tests |
-| `npm run build` | PASS — Next.js 16.4 production build; 91 pages generated; clean compile took 62 seconds |
-| English/Japanese route smoke checks | PASS — `/en`, `/ja`, discovery, destinations, experiences, itinerary, login, and signup returned 200; `/` locale redirect and protected `/ja/host` redirect verified |
-| Japanese server-rendered copy | PASS — landing, itinerary, and auth headings present in Japanese HTML |
-| Locale-aware protected redirect | PASS — unauthenticated `/ja/host` redirects to `/ja/auth/login` |
-| Git diff whitespace check | PASS |
-| Assistive-technology review | Not performed |
-| Fluent Japanese review | Not performed |
+| `npx tsc --noEmit` | PASS |
+| `npm test -- --run` | PASS — 21 files, 123 tests |
+| `npm run build` | PASS with isolated Windows SWC cache — Next.js 16.4.0, 91 routes generated; compile 84 seconds |
+| Production route smoke | PASS — root redirected to `/en`; English and Japanese public landing, discover, destinations, experiences, plan, and auth routes returned expected responses; protected traveler/host pages preserved locale in login redirects |
+| Git whitespace check | PASS |
+| Browser screen-reader/assistive-technology review | NOT RUN — manual review required |
+| Fluent Japanese review | NOT RUN — native/fluent reviewer required |
 
-## Known coverage limits
+The first build attempt failed before compilation because the Windows SWC native binding cache directory had a restrictive ACL. Re-running with `SWC_NATIVE_BINDING_CACHE` set to the isolated user cache completed successfully; no application build error remained.
 
-Auth action validation/service errors, booking and reflection workflows, itinerary detail/share pages, Cultural Passport, and several host, DMO, and admin pages still contain English UI. Some dynamic labels and backend-generated messages may also remain English. Source-authored records intentionally remain in their supplied language. Full bilingual release acceptance is not met until these areas are translated or clearly reviewed and the Japanese copy receives fluent human review.
+## Remaining release gates
+
+- Human fluent Japanese review, including cultural nuance and source-preserving translation policy.
+- Screen-reader and keyboard-only review across representative desktop and mobile layouts.
+- Some operational host, DMO, and admin page content, plus a few dynamic backend-provided statuses and error strings, remains English. This report does not claim full bilingual coverage of every authenticated workflow.
+- Reviewed translations for source-authored cultural guidance must be stored as editorial translations with their own provenance; automatic translation is not treated as verified cultural evidence.
+
+Phase 15's routing and core traveler-facing localization implementation is complete and automated checks pass. Full bilingual and accessibility release sign-off remains pending the human gates above.
