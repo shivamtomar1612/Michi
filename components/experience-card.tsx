@@ -13,7 +13,7 @@ export function ExperienceCard({ experience, destinationName }: { experience: Pu
       </div>
       <div className="p-5 sm:p-6">
         <p className="text-xs text-ink/60">{experience.operator_name}</p>
-        {experience.short_description ? <p className="mt-3 text-sm leading-6 text-ink/70">{experience.short_description}</p> : null}
+        {experience.short_description ? <p className="mt-3 text-base leading-7 text-ink/70">{experience.short_description}</p> : null}
         <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-ink/10 pt-4 text-xs text-ink/70">
           <span className="inline-flex items-center gap-1.5"><MapPin className="size-3.5" aria-hidden="true" />{destinationName}</span>
           <span className="inline-flex items-center gap-1.5"><Clock3 className="size-3.5" aria-hidden="true" />{experience.duration_minutes ? `${experience.duration_minutes} minutes` : "Duration not verified"}</span>

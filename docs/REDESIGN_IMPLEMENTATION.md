@@ -32,19 +32,19 @@
 - Refine the shared workspace shell without altering role guards or server actions. Host, DMO, and admin visual states were not individually redesigned or visually verified in this pass because authorized role sessions were unavailable.
 - Do not create routes for unavailable product areas or represent external listings as MICHI inventory.
 
-### 14.5D — Motion and interactions · implemented for the reviewed public surfaces
+### 14.5D — Motion and interactions · refined after independent review
 
-- Use motion only for meaningful page entry, selection, or feedback; content remains visible without animation.
+- Keep homepage content visible immediately; the shared reveal wrapper no longer uses scroll-triggered opacity transitions. The hero retains its brief entry treatment, and content remains visible without animation.
 - Honor reduced-motion preferences and avoid new animation dependencies unless necessary.
 - Use generated assets only as clearly non-documentary artwork; do not infer a real location from them.
 
-### 14.5E — QA and handoff · automated checks passed; independent visual review requires recapture
+### 14.5E — QA and handoff · checks pass; reviewed homepage fixes shipped
 
 - Verify representative public states. Host, DMO, and admin states remain unverified without authorized role sessions.
 - Responsive widths and mobile navigation keyboard behavior were checked for the public surfaces. A complete contrast audit, console/network review, and authorized host/DMO/admin visual pass remain open; Phase 15 remains out of scope.
 - Run repository lint, typecheck, tests, and production build.
 - Record exact evidence and remaining account/data limitations in `docs/VISUAL_QA_REPORT.md` and `docs/REDESIGN_HANDOFF.md`.
-- The independent Impeccable finish reviewer returned `disposition: recapture`: the available desktop PNG contains a transient compile indicator; clean desktop, mobile, and user-viewport captures still need to be saved and reviewed. No visual-approval claim is made.
+- The initial independent reviewer requested fixes to homepage labels, explanatory text size, repeated community copy, scroll-reveal motion, and concept-versus-code workflow state. These were addressed, then desktop, mobile, and 1265 × 711 screenshots were recreated. Final reviewer disposition: `ship` for the reviewed fixes, with no regressions. The review was scoped to the homepage and these findings; authenticated host, DMO, and admin views were not included.
 
 ## Change log
 

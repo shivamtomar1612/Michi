@@ -16,7 +16,7 @@ The redesign refines the public homepage, discovery results, destination present
 
 ## Review status
 
-The finish reviewer returned `disposition: recapture`. The available desktop screenshot includes a transient compile indicator; clean desktop, mobile, and 1265 × 711 user-viewport captures were not available to the reviewer. This handoff records an implementation checkpoint, not final visual approval. Host, DMO, and admin authenticated appearances also remain unverified because authorized test sessions were unavailable.
+The initial finish reviewer requested clean captures and copy/motion refinements. Captures have since been recreated after scrolling through all sections: desktop 1440px, mobile 390px, and the user viewport 1265 × 711. The capture script reported no unrevealed sections, broken images, page errors, or horizontal overflow. The final independent reviewer returned `disposition: ship` for the reviewed fixes and captures. The review was scoped to the homepage and these findings, not all role-protected surfaces. The concept image is a direction reference, not an approved comp; `.impeccable/config.json` now records code-first review. Host, DMO, and admin authenticated appearances remain unverified because authorized role sessions were unavailable.
 
 ## Recommended follow-up
 
@@ -24,6 +24,6 @@ The finish reviewer returned `disposition: recapture`. The available desktop scr
 2. Perform the dedicated Phase 15 accessibility and English/Japanese localization work. Test Japanese wrapping, focus, contrast, touch targets, and chart alternatives.
 3. Recheck imagery permissions and preserve creator/license attribution when assets change.
 4. Obtain field or preview performance measurements before making Core Web Vitals claims.
-5. Add persisted visual regression captures using an approved browser screenshot workflow when available.
+
 
 Phase 15 has not been started by this handoff.

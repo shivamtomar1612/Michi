@@ -2,9 +2,9 @@
 
 ## Scope and evidence
 
-The final production build was served locally at `http://localhost:3000`. Browser inspection covered the image-led public homepage, the guest-first navigation and calls to action, the Discover flow, destination detail, experiences, and the guest itinerary builder. The homepage was inspected at the available 1265 × 711 viewport. Earlier responsive checks covered the widths listed below.
+The latest local production build is served at `http://localhost:3000`. Browser inspection covered the image-led homepage after scrolling through every section, with saved captures at desktop 1440 × 900, mobile 390 × 844, and the user viewport 1265 × 711. The rebuilt site returned HTTP 200. The three full-page captures were visually inspected; the expected content is present from hero through footer. These captures are local review artifacts under `.impeccable/review/` and are not product photography.
 
-The Codex browser returned screenshots inline but did not provide a supported way to save those captures into the repository. An earlier desktop PNG exists but contains a transient “Compiling…” indicator and is not valid review evidence. A DevTools capture attempt failed because Chrome's debugging endpoint was unavailable, and a separate launch attempt was blocked. There are no valid persisted `desktop.png`, `mobile.png`, or `user-1265.png` captures. The selected concept comp is a design reference, not a screenshot of the running application.
+The selected concept image is a design-direction reference, not an approved comp. The Impeccable workflow configuration now uses `buildPath: code`; the previous generated plate experiment is not used by the app. The final independent reviewer returned `ship` for the reviewed homepage fixes. The review does not cover role-protected dashboards.
 
 ## Responsive checks
 
@@ -31,6 +31,9 @@ The Discover journey was exercised as a guest: interest and date filters were su
 - A duplicate community explanation was removed from the homepage.
 - Above-the-fold destination images use eager loading in accordance with the installed Next.js 16.4 guidance.
 - Experience listings use a typographic treatment rather than an unrelated illustrative photo.
+- Removed homepage eyebrow/kicker labels and increased primary explanatory copy to at least 16px.
+- Removed repeated consent/capacity explanations from the community-benefit section; it now states that outcome metrics are not yet measured.
+- Removed scroll-triggered reveal motion from the shared reveal wrapper so below-fold content does not wait for scrolling or animation.
 
 ## Checks
 
@@ -40,11 +43,11 @@ The Discover journey was exercised as a guest: interest and date filters were su
 - `npm run build` — PASS (Next.js 16.4.0, Turbopack)
 - HTTP GET — PASS (200) for `/`, `/discover`, `/destinations/kanazawa`, and `/experiences`
 - Impeccable detector — PASS with no findings on the single required run; a second detector run was intentionally not performed.
-- Independent Impeccable finish review — `recapture`; it rejected the available evidence and requires clean desktop, mobile, and 1265 × 711 screenshots before visual review can proceed.
+- Independent Impeccable finish review — initial disposition `fix`; requested changes were implemented and recaptured. Final disposition `ship` for the reviewed homepage changes, with no regressions.
 
 ## Not verified in this environment
 
 - Host, DMO, and admin dashboards require authorized role sessions. Their route guards and data logic were left intact, but authenticated visual states were not opened in this browser run.
-- A valid saved, full-page desktop/mobile screenshot set is not available. The independent review is blocked until those captures are saved and checked.
+- Host, DMO, and admin authenticated visual states remain unverified because authorized role sessions are unavailable.
 - No Vercel preview or production performance score was produced. The 54-second cold production compilation is a local build measurement, not a field performance metric.
 - The DMO and host product states remain constrained by the actual empty MICHI host inventory and missing current Destination Health evidence documented in the existing production audit.
